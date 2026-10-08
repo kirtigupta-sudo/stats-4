@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hypothesis Testing: A Complete Beginner's Guide (Interactive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Literata:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f5f8;--card:#fff;--ink:#16202a;--mut:#566574;--line:#d5dee6;--teal:#0d7a79;--blue:#2d6bd6;--rej:#d1425a;--amb:#dc8f26;--ok:#2a9866;
+--tealbg:color-mix(in srgb,var(--teal) 11%,var(--card));--bluebg:color-mix(in srgb,var(--blue) 10%,var(--card));--rejbg:color-mix(in srgb,var(--rej) 11%,var(--card));--ambbg:color-mix(in srgb,var(--amb) 14%,var(--card));--okbg:color-mix(in srgb,var(--ok) 12%,var(--card))}
+@media(prefers-color-scheme:dark){:root{--bg:#0e151b;--card:#16202a;--ink:#e5ecf2;--mut:#9aa9b7;--line:#283541;--teal:#3dc3bf;--blue:#6c9fff;--rej:#ff7488;--amb:#f2b04f;--ok:#4cc58d}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 'Literata',Georgia,serif}
+h1,h2,h3,h4,button,label,nav,summary,th,.ui,select,input,output{font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif}
+h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.08;margin:.2em 0 .4em;letter-spacing:-.02em}
+h2{font-size:clamp(1.6rem,3.4vw,2.1rem);line-height:1.15;margin:0 0 .5em;letter-spacing:-.01em}
+h3{font-size:1.2rem;margin:1.6em 0 .5em}h4{margin:0 0 .3em;font-size:1rem}
+p{margin:.6em 0}
+.shell{display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px;max-width:1160px;margin:0 auto;padding:0 20px}
+nav.side{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 0;font-size:.92rem}
+nav.side b{display:block;margin:18px 0 4px;color:var(--mut);font-weight:500;font-size:.8rem}
+nav.side a{display:block;padding:4px 10px;margin-left:-10px;color:var(--ink);text-decoration:none;border-left:3px solid transparent;line-height:1.35}
+nav.side a:hover{background:var(--tealbg)}nav.side a.on{border-left-color:var(--teal);font-weight:700;color:var(--teal)}
+main{padding:30px 0 100px;min-width:0}
+section{padding-top:64px;scroll-margin-top:0}
+.hero{padding:40px 0 10px}.lead{font-size:1.15rem;max-width:62ch}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:18px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card h4{font-size:1.02rem}.card p{margin:.3em 0;font-size:.97rem}
+.tint-teal{background:var(--tealbg)}.tint-rej{background:var(--rejbg)}.tint-amb{background:var(--ambbg)}.tint-blue{background:var(--bluebg)}.tint-ok{background:var(--okbg)}
+.call{border-left:4px solid var(--teal);background:var(--tealbg);padding:14px 18px;border-radius:0 10px 10px 0;margin:18px 0}
+.call.warn{border-color:var(--amb);background:var(--ambbg)}.call.bad{border-color:var(--rej);background:var(--rejbg)}
+.call h4{margin-bottom:.2em}.call p{margin:.3em 0}
+.eq{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.15rem;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:14px 0;overflow-x:auto;text-align:center}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 4px}.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 6px 2px}.fr>span:last-child{padding:2px 6px 0}
+ul.tick{padding-left:1.1em}ul.tick li{margin:.3em 0}
+.lab{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:10px;padding:16px 18px 18px;margin:22px 0}
+.lab>h4{margin:0 0 .6em;font-size:1.05rem}
+.lab>h4::before{content:"Try it";font-size:.75rem;font-weight:700;color:var(--card);background:var(--teal);padding:2px 8px;border-radius:99px;margin-right:10px;vertical-align:2px}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px 18px;margin:8px 0 12px}
+.ctl label{display:flex;flex-direction:column;gap:3px;font-size:.84rem;color:var(--mut);font-weight:500}
+.ctl output{font-weight:700;color:var(--ink);font-size:.95rem}
+input[type=range]{width:100%;accent-color:var(--teal)}
+input[type=number],select{font-size:.95rem;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);width:100%}
+.btn{font-size:.9rem;font-weight:700;padding:8px 14px;border-radius:8px;border:1.5px solid var(--teal);background:var(--card);color:var(--teal);cursor:pointer}
+.btn:hover{background:var(--tealbg)}.btn.on{background:var(--teal);color:var(--card)}.btn.sm{padding:5px 10px;font-size:.82rem}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;align-items:center}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+svg{width:100%;height:auto;display:block}svg text{font:12.5px 'Bricolage Grotesque',system-ui,sans-serif;fill:var(--mut)}
+.cv{fill:none;stroke-width:2.6}.cv-blue{stroke:var(--blue)}.cv-amb{stroke:var(--amb)}.cv-mut{stroke:var(--mut);stroke-dasharray:5 4;stroke-width:2}
+.sh-rej{fill:var(--rej);opacity:.45}.sh-teal{fill:var(--teal);opacity:.4}.sh-amb{fill:var(--amb);opacity:.5}.sh-blue{fill:var(--blue);opacity:.22}
+.ax{stroke:var(--line);stroke-width:1.5}.ln{stroke-width:2;stroke-dasharray:6 4}.ln-ink{stroke:var(--ink)}.ln-rej{stroke:var(--rej)}.ln-teal{stroke:var(--teal)}.ln-mut{stroke:var(--mut)}
+.b-blue{fill:var(--blue)}.b-rej{fill:var(--rej)}.b-amb{fill:var(--amb)}.b-teal{fill:var(--teal)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:10px 0}
+.stat{background:var(--bg);border-radius:8px;padding:8px 12px}.stat span{display:block;font-size:.76rem;color:var(--mut);font-family:'Bricolage Grotesque',system-ui,sans-serif}.stat b{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.25rem}
+.verdict{border-radius:8px;padding:10px 14px;font-weight:600;font-family:'Bricolage Grotesque',system-ui,sans-serif;margin-top:8px;line-height:1.45}
+.verdict.rej{background:var(--rejbg);border-left:4px solid var(--rej)}.verdict.keep{background:var(--bluebg);border-left:4px solid var(--blue)}
+.hyp{display:flex;flex-wrap:wrap;gap:6px 24px;font-family:'Bricolage Grotesque',system-ui,sans-serif;font-size:1.05rem;margin:4px 0 6px}
+table{border-collapse:collapse;width:100%;margin:12px 0;background:var(--card);font-size:.95rem}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:center}th{background:var(--bg);font-weight:700}td:first-child,th:first-child{text-align:left}
+.tbl{overflow-x:auto}
+details.step{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:8px 0}
+details.step summary{cursor:pointer;padding:11px 16px;font-weight:700;list-style:none;display:flex;gap:12px;align-items:center}
+details.step summary::-webkit-details-marker{display:none}
+details.step .n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--teal);color:var(--card);display:grid;place-items:center;font-size:.9rem}
+details.step>div{padding:2px 18px 14px 56px}details.step>div p{margin:.3em 0}
+details.mini{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:8px 0}details.mini summary{cursor:pointer;padding:9px 14px;font-weight:700}details.mini>div{padding:0 14px 10px}
+.problem{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:16px 0}
+.reveal{display:none;margin-top:8px}.reveal.show{display:block}
+.chk{display:inline-flex;gap:8px;align-items:center}.chk input{width:110px}
+.meter{position:relative;height:18px;background:var(--bg);border-radius:9px;overflow:hidden;border:1px solid var(--line)}.meter i{position:absolute;inset:0 auto 0 0;background:var(--blue)}.meter u{position:absolute;top:0;bottom:0;width:3px;background:var(--rej)}
+#dots{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;max-width:360px;margin:8px 0}#dots i{aspect-ratio:1;border-radius:50%;background:var(--line)}#dots i.r{background:var(--rej)}
+.cat{background:var(--bg);border-radius:8px;padding:8px 12px}
+.bar2{display:flex;height:30px;border-radius:6px;overflow:hidden;margin:4px 0 10px;font:600 .8rem 'Bricolage Grotesque',system-ui,sans-serif;color:#fff}.bar2 div{display:grid;place-items:center;white-space:nowrap}
+.tailcard{cursor:pointer;border-width:2px}.tailcard.on{border-color:var(--teal);background:var(--tealbg)}
+.cap{font-size:.85rem;color:var(--mut);margin:2px 0 0}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.foot{margin-top:70px;padding-top:20px;border-top:1px solid var(--line);color:var(--mut);font-size:.9rem}
+@media(max-width:900px){.shell{display:block;padding:0 16px}nav.side{position:sticky;z-index:9;top:0;height:auto;background:var(--bg);display:flex;gap:2px;overflow-x:auto;padding:8px 0;white-space:nowrap;border-bottom:1px solid var(--line);margin:0 -16px;padding-left:16px}nav.side b{display:none}nav.side a{border-left:0;border-bottom:3px solid transparent;margin:0}nav.side a.on{border-bottom-color:var(--teal)}section{scroll-margin-top:50px}details.step>div{padding-left:18px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class="side" aria-label="Sections"></nav>
+<main>
+
+<header class="hero" id="top">
+<h1>Hypothesis Testing: A Complete Beginner's Guide</h1>
+<p class="lead">You already understand probability distributions, the Central Limit Theorem, and confidence intervals. Now it is time to put all of that knowledge to work. Hypothesis testing is the engine that drives almost every scientific conclusion you have ever read — from clinical drug trials to psychology experiments to quality control in manufacturing. In this guide, we will build the concept from the ground up, walk through real-world examples, and solve problems step by step so that by the end, you will be able to run a hypothesis test confidently on your own.</p>
+<div class="grid3">
+<div class="card tint-blue"><h4>📘 What You'll Learn</h4><p>The logic and structure of hypothesis testing, from setting up hypotheses to drawing conclusions.</p></div>
+<div class="card tint-teal"><h4>🔢 Worked Examples</h4><p>Fully solved numerical problems with real-world contexts — medicine, quality control, education, and more.</p></div>
+<div class="card tint-amb"><h4>🧠 Intuition First</h4><p>Every concept is explained in plain English before any formula is introduced, so the maths always makes sense.</p></div>
+</div>
+<p class="cap">Look for the <b>Try it</b> panels: every one is a live experiment. Drag the sliders, change the numbers and watch the conclusion change.</p>
+</header>
+
+<!-- ============ WHAT IS HT ============ -->
+<section id="what" data-nav="Foundations|What is hypothesis testing?">
+<h2>What Is Hypothesis Testing?</h2>
+<p>At its heart, hypothesis testing is a structured way of making decisions under uncertainty. You have some claim about the world — maybe a new drug lowers blood pressure, or a factory machine is producing items that are too heavy — and you want to know: is this claim actually true, or could the data you are seeing just be due to random chance?</p>
+<div class="call"><h4>The Core Idea</h4><p>We start by assuming nothing has changed (this is called the <b>null hypothesis</b>). We then collect data and ask: "How likely would this data be if the null hypothesis were true?" If the answer is "very unlikely," we reject the null hypothesis and conclude that something real is going on.</p></div>
+<p>Think of it like a courtroom: the defendant is assumed innocent until proven guilty. The null hypothesis is innocence. The data is the evidence. The question is whether the evidence is strong enough to overturn the assumption.</p>
+
+<div class="lab"><h4>The courtroom: how strong is the evidence?</h4>
+<div class="ctl"><label>Strength of evidence against "innocence" (H₀)<input type="range" id="evid" min="0" max="100" value="40"><output></output></label></div>
+<div class="meter"><i id="evBar"></i><u style="left:95%"></u></div>
+<p class="cap">The red line is the burden of proof (with α = 0.05, we need the evidence to be in the top 5% of surprising).</p>
+<div class="verdict keep" id="evOut"></div></div>
+
+<h3>A Simple Real-World Analogy</h3>
+<p>Imagine a coin. You suspect it is biased towards heads. You flip it 100 times and get 70 heads. Is that proof the coin is biased, or could you get 70 heads just by luck with a fair coin?</p>
+<p>Hypothesis testing gives you a precise, mathematically grounded answer to exactly that type of question. It tells you the probability of getting 70 or more heads if the coin were truly fair — and if that probability is small enough, you conclude the coin is indeed biased. This logic applies to medicine, engineering, business, psychology, and virtually every field that uses data.</p>
+
+<div class="lab"><h4>Fair coin or biased coin?</h4>
+<div class="ctl"><label>Heads you observed in 100 flips<input type="range" id="coinK" min="50" max="85" value="70"><output></output></label></div>
+<div class="row"><button class="btn" id="coinSim">Run 1,000 experiments with a fair coin</button><button class="btn sm" id="coinClr">Clear</button></div>
+<div id="coinPlot"></div>
+<p class="cap">Blue bars: how many heads a <b>fair</b> coin gives in 100 flips (exact probabilities). Red bars: results as extreme as yours. Amber bars: your simulated experiments.</p>
+<div class="verdict keep" id="coinOut"></div></div>
+</section>
+
+<!-- ============ HYPOTHESES ============ -->
+<section id="hyp" data-nav="Foundations|Null &amp; alternative">
+<h2>The Two Hypotheses: Null and Alternative</h2>
+<p>Every hypothesis test begins with two competing statements about the world. Understanding these clearly is the single most important foundation of the entire topic.</p>
+<div class="grid2">
+<div class="card tint-blue"><h4>The Null Hypothesis (H₀) — "Nothing New Is Happening"</h4><p>The null hypothesis is the default position — the status quo. It typically states that there is no effect, no difference, or no change. For example: "This drug has no effect on blood pressure" or "The average weight of cereal boxes from this machine is exactly 500g." We assume H₀ is true until the data gives us strong evidence against it. The null hypothesis always contains an equality: =, ≤, or ≥.</p></div>
+<div class="card tint-amb"><h4>The Alternative Hypothesis (H₁ or Hₐ) — "Something Has Changed"</h4><p>The alternative hypothesis is what you actually want to test — the claim you are trying to find evidence for. For example: "This drug lowers blood pressure" or "The machine is over-filling the cereal boxes." The alternative hypothesis uses strict inequalities: ≠, &lt;, or &gt;. The direction of your alternative hypothesis determines what kind of test you run (more on this shortly).</p></div>
+</div>
+<h3>Three Common Formulations</h3>
+<div class="grid3" id="tailCards">
+<div class="card tailcard on" data-t="two" tabindex="0" role="button"><h4>Two-Tailed Test</h4><p>H₀: μ = 500g<br>H₁: μ ≠ 500g</p><p class="cap">"The mean is different from 500g — could be higher or lower."</p></div>
+<div class="card tailcard" data-t="right" tabindex="0" role="button"><h4>Right-Tailed Test</h4><p>H₀: μ ≤ 500g<br>H₁: μ &gt; 500g</p><p class="cap">"The mean is greater than 500g."</p></div>
+<div class="card tailcard" data-t="left" tabindex="0" role="button"><h4>Left-Tailed Test</h4><p>H₀: μ ≥ 500g<br>H₁: μ &lt; 500g</p><p class="cap">"The mean is less than 500g."</p></div>
+</div>
+<div class="lab"><h4>Where does each test look for evidence?</h4>
+<p>Click a card above. The red region is where the sample would have to land (α = 0.05) for us to reject H₀.</p>
+<div id="tailPlot"></div><p class="cap" id="tailCap"></p></div>
+</section>
+
+<!-- ============ ALPHA ============ -->
+<section id="alpha" data-nav="Foundations|Significance level (α)">
+<h2>Significance Level (α): Setting the Bar</h2>
+<p>Before you collect any data, you need to decide how much evidence is "enough" to reject the null hypothesis. This threshold is called the <b>significance level</b>, denoted by the Greek letter α (alpha).</p>
+<h3>What Does α Actually Mean?</h3>
+<p>The significance level α is the probability of rejecting the null hypothesis when it is actually true. In other words, it is the probability of making a false alarm — concluding there is an effect when there really is not one. This type of error is called a <b>Type I Error</b>.</p>
+<div class="grid3">
+<div class="card"><h4>α = 0.05 (5%)</h4><p>Most common in social sciences and medicine. Used by default unless stated otherwise.</p></div>
+<div class="card"><h4>α = 0.01 (1%)</h4><p>Used when the cost of a false alarm is high (e.g., pharmaceutical approval).</p></div>
+<div class="card"><h4>α = 0.10 (10%)</h4><p>Used in exploratory research where you are willing to take more risk.</p></div>
+</div>
+<h3>The Intuition Behind α</h3>
+<p>Think of α as setting the <b>burden of proof</b>. A smaller α means you demand stronger evidence before concluding the null hypothesis is false. A larger α means you are more easily convinced.</p>
+<p>Crucially, α is chosen <b>before</b> looking at any data — not after. Choosing α after seeing the data would be like changing the rules of a game after you see the results. It undermines the integrity of the entire procedure.</p>
+<div class="call warn"><h4>Always state your significance level before conducting the test.</h4><p>This is a fundamental rule of statistical ethics and scientific reproducibility.</p></div>
+
+<div class="lab"><h4>Move the bar: the rejection region and false alarms</h4>
+<div class="ctl"><label>Significance level α<input type="range" id="aSl" min="0.005" max="0.2" step="0.005" value="0.05"><output></output></label>
+<label>Type of test<select id="aTail"><option value="two">Two-tailed</option><option value="right">Right-tailed</option><option value="left">Left-tailed</option></select></label></div>
+<div class="row"><button class="btn sm" data-a="0.1">α = 0.10</button><button class="btn sm" data-a="0.05">α = 0.05</button><button class="btn sm" data-a="0.01">α = 0.01</button></div>
+<div id="aPlot"></div>
+<div class="stats"><div class="stat"><span>Critical value(s) (z)</span><b id="aCrit"></b></div><div class="stat"><span>Chance of a false alarm if H₀ is true</span><b id="aFalse"></b></div></div>
+<h4 style="margin-top:14px">100 experiments where H₀ is really true</h4>
+<p class="cap">Every red dot is a "significant" result that happened purely by chance — a Type I error.</p>
+<div id="dots"></div><div class="row"><button class="btn" id="dotRun">Run 100 tests</button><span id="dotOut" class="ui"></span></div></div>
+</section>
+
+<!-- ============ P-VALUE ============ -->
+<section id="pval" data-nav="Foundations|The p-value">
+<h2>The p-Value: The Heart of the Decision</h2>
+<p>Once you have collected your data and computed a test statistic, you need a way to decide whether your result is surprising enough to reject H₀. This is where the p-value comes in — it is arguably the most important (and most misunderstood) number in statistics.</p>
+<div class="call"><p>The <b>p-value</b> is the probability of observing a test result as extreme as — or more extreme than — the one you got, assuming the null hypothesis is true.</p></div>
+<h3>Plain English Translation</h3>
+<p>The p-value answers this question: "If H₀ were actually true, how often would I get data this extreme just by chance?"</p>
+<div class="grid2">
+<div class="card tint-rej"><h4>Small p-value (e.g., p = 0.002)</h4><p>This data would be very rare if H₀ were true. Strong evidence against H₀. → Likely reject H₀.</p></div>
+<div class="card tint-blue"><h4>Large p-value (e.g., p = 0.45)</h4><p>This data is quite plausible if H₀ were true. Weak evidence against H₀. → Do not reject H₀.</p></div>
+</div>
+<div class="eq">Decision rule: if <b>p ≤ α</b>, reject H₀. If <b>p &gt; α</b>, fail to reject H₀.</div>
+
+<div class="lab"><h4>Slide the test statistic and watch p change</h4>
+<div class="ctl"><label>Observed z-score<input type="range" id="pZ" min="-4" max="4" step="0.01" value="-2"><output></output></label>
+<label>Type of test<select id="pTail"><option value="two">Two-tailed</option><option value="right">Right-tailed</option><option value="left" selected>Left-tailed</option></select></label>
+<label>α<select id="pA"><option value="0.1">0.10</option><option value="0.05" selected>0.05</option><option value="0.01">0.01</option></select></label></div>
+<div id="pPlot"></div>
+<div class="stats"><div class="stat"><span>p-value (red area)</span><b id="pVal"></b></div><div class="stat"><span>α</span><b id="pAOut"></b></div></div>
+<div class="verdict" id="pVerd"></div></div>
+
+<h3>⚠️ Common Misconceptions</h3>
+<p>The p-value is widely misunderstood, even by experienced researchers. Here are the most important things the p-value is NOT. Tap each one to see why.</p>
+<details class="mini"><summary>❌ It is NOT the probability that H₀ is true.</summary><div>The p-value assumes H₀ is true and asks how surprising the data is. It cannot also tell you how likely H₀ is.</div></details>
+<details class="mini"><summary>❌ It is NOT the probability that the result occurred by chance.</summary><div>It is a probability about the data <i>given</i> H₀ — not a probability that "chance did it".</div></details>
+<details class="mini"><summary>❌ A small p-value does NOT mean the effect is large or practically important.</summary><div>With a huge sample, tiny differences can give tiny p-values.</div></details>
+<details class="mini"><summary>❌ "Failing to reject H₀" does NOT mean H₀ is true.</summary><div>It just means you did not find enough evidence against it.</div></details>
+<p>The p-value is purely about the data given H₀. It says nothing directly about the truth of H₀.</p>
+</section>
+
+<!-- ============ FIVE STEPS ============ -->
+<section id="five" data-nav="Foundations|The five-step framework">
+<h2>The Five-Step Framework for Any Hypothesis Test</h2>
+<p>Good news: every single hypothesis test you will ever encounter follows the same five steps. Learn this framework once and you can handle any test — z-test, t-test, chi-square, ANOVA, and more. Internalise this structure before moving on.</p>
+<div class="lab"><h4>Walk through the five steps</h4>
+<div class="tabs" id="fiveTabs"></div>
+<div class="card" id="fiveBody" style="margin-top:12px"></div></div>
+</section>
+
+<!-- ============ Z TEST ============ -->
+<section id="ztest" data-nav="Tests for means|The z-test">
+<h2>The z-Test: When Population Standard Deviation Is Known</h2>
+<p>The one-sample z-test is the most fundamental hypothesis test. You use it when you are testing a claim about a population mean (μ) and you know the population standard deviation (σ). Thanks to the Central Limit Theorem, even if the population is not perfectly normal, the z-test is valid for large samples (n ≥ 30).</p>
+<h3>The z-Test Statistic Formula</h3>
+<div class="eq">z = <span class="fr"><span>x̄ − μ₀</span><span>σ / √n</span></span></div>
+<ul class="tick"><li><b>x̄</b> = sample mean</li><li><b>μ₀</b> = hypothesised population mean (from H₀)</li><li><b>σ</b> = known population standard deviation</li><li><b>n</b> = sample size</li></ul>
+<p>This formula is exactly what you recognise from standardisation — it converts the sample mean into a z-score on the standard normal distribution.</p>
+<h3>Critical Values for Common α Levels</h3>
+<div class="tbl"><table><tr><th>Test</th><th>α = 0.05</th><th>α = 0.01</th></tr><tr><td>Two-tailed</td><td>±1.96</td><td>±2.576</td></tr><tr><td>Right-tailed</td><td>+1.645</td><td>+2.326</td></tr><tr><td>Left-tailed</td><td>−1.645</td><td>−2.326</td></tr></table></div>
+<p>If your computed z falls beyond the critical value (in the rejection region), you reject H₀.</p>
+
+<h3>Solved Example 1: The Cereal Box Problem (z-Test)</h3>
+<div class="card"><p><b>Problem:</b> A cereal manufacturer claims that their boxes contain an average of 500g of cereal. A quality control inspector suspects the machine is under-filling the boxes. She takes a random sample of n = 36 boxes and finds a sample mean of x̄ = 496g. The population standard deviation is known to be σ = 12g. Test at α = 0.05.</p></div>
+<div id="ex1steps"></div>
+<div class="lab"><h4>Change the cereal data</h4><p class="cap">Starts with the numbers from the example. Slide the sample mean up toward 500 and see when the decision flips. Slide n to see how a bigger sample sharpens the evidence.</p><div id="ex1calc"></div></div>
+</section>
+
+<!-- ============ ERRORS ============ -->
+<section id="errors" data-nav="Tests for means|Type I &amp; Type II errors">
+<h2>Type I and Type II Error: When Tests Go Wrong</h2>
+<p>No hypothesis test is perfect. Because we are making decisions based on sample data — and samples are subject to random variation — we can sometimes arrive at the wrong conclusion. There are exactly two ways a hypothesis test can be wrong, and understanding them is critical.</p>
+<div class="tbl"><table><tr><th>Decision ↓ / Reality →</th><th>H₀ is true</th><th>H₀ is false</th></tr><tr><td>Reject H₀</td><td style="background:var(--rejbg)"><b>Type I error</b> (false positive), probability α</td><td style="background:var(--okbg)">Correct (power = 1 − β)</td></tr><tr><td>Fail to reject H₀</td><td style="background:var(--okbg)">Correct</td><td style="background:var(--ambbg)"><b>Type II error</b> (false negative), probability β</td></tr></table></div>
+<div class="grid2">
+<div class="card tint-rej"><h4>Type I Error (False Positive) — α</h4><p><b>Definition:</b> Rejecting H₀ when H₀ is actually true.</p><p><b>Real-world example:</b> A doctor concludes a patient has a disease (rejects H₀: "no disease") when the patient is actually healthy. This is a false alarm.</p><p><b>Probability:</b> The probability of a Type I error is exactly α — the significance level you set. By choosing α = 0.05, you accept a 5% risk of a false alarm whenever H₀ is true.</p><p><b>How to reduce it:</b> Use a smaller α (e.g., 0.01). But this comes at a cost...</p></div>
+<div class="card tint-amb"><h4>Type II Error (False Negative) — β</h4><p><b>Definition:</b> Failing to reject H₀ when H₀ is actually false.</p><p><b>Real-world example:</b> A doctor concludes the patient is healthy (fails to reject H₀) when the patient actually has the disease. A missed diagnosis.</p><p><b>Probability:</b> The probability of a Type II error is denoted β (beta). It depends on α, sample size, and the true effect size.</p><p><b>How to reduce it:</b> Increase sample size, or use a larger α. Note the trade-off: decreasing α (reducing Type I errors) tends to increase β (increasing Type II errors).</p></div>
+</div>
+<h3>Power of a Test = 1 − β</h3>
+<p>The power of a hypothesis test is the probability of correctly rejecting H₀ when H₀ is false — i.e., the probability of detecting a real effect. Power = 1 − β. A power of 0.80 (80%) is generally considered adequate for most research. Higher power requires a larger sample size. Researchers often perform a power analysis before collecting data to determine the sample size needed to achieve adequate power.</p>
+<div class="lab"><h4>The α, β and power seesaw</h4>
+<p class="cap">A right-tailed z-test. The blue curve is the world where H₀ is true; the amber curve is a world where the true mean is really higher.</p>
+<div class="ctl"><label>True effect size (in σ units)<input type="range" id="eD" min="0.1" max="1.5" step="0.05" value="0.5"><output></output></label>
+<label>Sample size n<input type="range" id="eN" min="2" max="200" value="25"><output></output></label>
+<label>α<input type="range" id="eA" min="0.005" max="0.2" step="0.005" value="0.05"><output></output></label></div>
+<div id="ePlot"></div>
+<div class="stats"><div class="stat"><span>α (Type I, red)</span><b id="eAo"></b></div><div class="stat"><span>β (Type II, amber)</span><b id="eB"></b></div><div class="stat"><span>Power = 1 − β (green)</span><b id="eP"></b></div></div>
+<div class="verdict keep" id="eV"></div></div>
+</section>
+
+<!-- ============ T TEST ============ -->
+<section id="ttest" data-nav="Tests for means|The t-test">
+<h2>The t-Test: When σ Is Unknown</h2>
+<p>In practice, you almost never know the true population standard deviation σ. Instead, you estimate it using the sample standard deviation s. When you do this, the standardised test statistic no longer follows a normal distribution — it follows a <b>t-distribution</b>, which has heavier tails (more uncertainty) than the normal distribution. The t-distribution has a parameter called <b>degrees of freedom (df)</b>, which controls how heavy the tails are. For a one-sample t-test, df = n − 1.</p>
+<h3>The t-Test Statistic</h3>
+<div class="eq">t = <span class="fr"><span>x̄ − μ₀</span><span>s / √n</span></span> &nbsp;, &nbsp; df = n − 1</div>
+<ul class="tick"><li><b>x̄</b> = sample mean</li><li><b>μ₀</b> = hypothesised mean (from H₀)</li><li><b>s</b> = sample standard deviation</li><li><b>n</b> = sample size</li><li><b>df</b> = n − 1</li></ul>
+<p>The formula looks identical to the z-test formula, but you use s instead of σ, and you compare the result to a t-table instead of a z-table.</p>
+<h3>When to Use z vs. t</h3>
+<div class="grid2"><div class="card tint-blue"><h4>Use z-test when:</h4><ul class="tick"><li>σ is known (rare in practice)</li><li>n ≥ 30 and σ is known</li></ul></div>
+<div class="card tint-teal"><h4>Use t-test when:</h4><ul class="tick"><li>σ is unknown (very common)</li><li>n is small (n &lt; 30)</li><li>The population is approximately normal</li></ul></div></div>
+<p>As n increases, the t-distribution approaches the normal distribution. For very large n (say, n &gt; 100), the t and z critical values become nearly identical. This is why many textbooks say "use z for large n, t for small n" — though in practice, using the t-distribution is always safer when σ is unknown.</p>
+<div class="lab"><h4>Watch the t-distribution turn into the normal curve</h4>
+<div class="ctl"><label>Degrees of freedom (df)<input type="range" id="tDf" min="1" max="100" value="3"><output></output></label></div>
+<div id="tPlot"></div>
+<p class="cap">Dashed grey: standard normal. Blue: t-distribution. Red area: the two-tailed rejection region at α = 0.05.</p>
+<div class="stats"><div class="stat"><span>t critical value (two-tailed, α = 0.05)</span><b id="tCrit"></b></div><div class="stat"><span>z critical value</span><b>1.960</b></div></div></div>
+
+<h3>Solved Example 2: Student Exam Scores (t-Test)</h3>
+<div class="card"><p><b>Problem:</b> A university professor believes that the average score on a standardised test at her university is higher than the national average of 72 points. She randomly samples n = 15 students and records their scores. The sample mean is x̄ = 76.4 and the sample standard deviation is s = 8.2. The population standard deviation is unknown. Test at α = 0.05.</p></div>
+<div id="ex2steps"></div>
+<div class="lab"><h4>Change the exam data</h4><div id="ex2calc"></div></div>
+</section>
+
+<!-- ============ CI ============ -->
+<section id="ci" data-nav="Tests for means|Connecting tests to CIs">
+<h2>Connecting Hypothesis Tests to Confidence Intervals</h2>
+<p>You have already studied confidence intervals (CIs) in a previous unit. It turns out that hypothesis tests and confidence intervals are two sides of the same coin. Understanding their connection gives you a much deeper intuition for both.</p>
+<h3>The Deep Connection</h3>
+<p>A 95% confidence interval gives you a range of plausible values for the population parameter. A two-tailed hypothesis test at α = 0.05 rejects H₀ if the hypothesised value falls outside the 95% confidence interval. In other words:</p>
+<ul class="tick"><li>If μ₀ falls <b>inside</b> the 95% CI → fail to reject H₀ at α = 0.05</li><li>If μ₀ falls <b>outside</b> the 95% CI → reject H₀ at α = 0.05</li></ul>
+<p>This duality means that a confidence interval actually gives you <i>more</i> information than a hypothesis test — it tells you not just whether to reject H₀, but also what values are plausible for the parameter. Many statisticians now advocate reporting confidence intervals alongside (or instead of) p-values.</p>
+<h3>Example: Returning to the Cereal Boxes</h3>
+<p>Recall from Example 1: x̄ = 496g, σ = 12g, n = 36, and we rejected H₀: μ = 500g at α = 0.05. The 95% confidence interval for μ is:</p>
+<div class="eq">CI = x̄ ± z<sub>0.025</sub> · <span class="fr"><span>σ</span><span>√n</span></span> = 496 ± 1.96 · <span class="fr"><span>12</span><span>√36</span></span> = 496 ± 3.92</div>
+<p>This gives a 95% CI of <b>(492.08g, 499.92g)</b>. Notice that the hypothesised value of 500g is not inside this interval — consistent with our earlier decision to reject H₀. The CI also tells us something the p-value did not: the true mean is likely between 492g and 500g, which helps the manufacturer understand the severity of the under-filling issue.</p>
+<div class="lab"><h4>Slide the hypothesised value in and out of the interval</h4>
+<div class="ctl"><label>Sample mean x̄ (g)<input type="range" id="ciX" min="488" max="506" step="0.1" value="496"><output></output></label>
+<label>Sample size n<input type="range" id="ciN" min="4" max="400" value="36"><output></output></label>
+<label>Hypothesised μ₀ (g)<input type="range" id="ciMu" min="490" max="508" step="0.1" value="500"><output></output></label>
+<label>Confidence level<select id="ciC"><option value="0.9">90%</option><option value="0.95" selected>95%</option><option value="0.99">99%</option></select></label></div>
+<div id="ciPlot"></div><p class="cap">σ = 12g is known. Bar: confidence interval. Dot: x̄. Dashed line: μ₀.</p>
+<div class="verdict" id="ciV"></div></div>
+</section>
+
+<!-- ============ PITFALLS ============ -->
+<section id="pit" data-nav="Tests for means|Pitfalls &amp; summary">
+<h2>Key Concept Summary &amp; Common Pitfalls</h2>
+<p>Before we wrap up, let us consolidate the most important ideas from this entire guide and flag the most common mistakes students make in hypothesis testing. Use this as a revision checklist.</p>
+<div class="grid2">
+<div class="card tint-rej"><h4>Pitfall 1: Confusing "Fail to Reject" with "Accept H₀"</h4><p>Not rejecting H₀ does NOT mean H₀ is true. It only means the evidence was insufficient. You never "prove" H₀ — you only fail to disprove it.</p></div>
+<div class="card tint-rej"><h4>Pitfall 2: p-Hacking and Choosing α After Seeing Data</h4><p>Always set α before collecting data. Running multiple tests and reporting only the significant ones (p-hacking) inflates the Type I error rate far above α and is a serious breach of scientific integrity.</p></div>
+<div class="card tint-rej"><h4>Pitfall 3: Statistical vs. Practical Significance</h4><p>With a very large sample, even a tiny, unimportant difference can be statistically significant (very small p-value). Always ask: "Is this result meaningful in practice?" A 0.001°C temperature change may be statistically significant but practically irrelevant.</p></div>
+<div class="card tint-rej"><h4>Pitfall 4: Violating Test Assumptions</h4><p>The z-test assumes σ is known and n is large (or the population is normal). The t-test assumes approximate normality or large n. Always check your assumptions before running any test.</p></div>
+</div>
+<div class="lab"><h4>Statistical vs. practical significance</h4>
+<p class="cap">The true difference is fixed at a trivial 0.5 points (σ = 10). Only the sample size changes.</p>
+<div class="ctl"><label>Sample size n<input type="range" id="spN" min="10" max="20000" step="10" value="100"><output></output></label></div>
+<div class="stats"><div class="stat"><span>z for a 0.5-point difference</span><b id="spZ"></b></div><div class="stat"><span>p-value (two-tailed)</span><b id="spP"></b></div></div>
+<div class="verdict" id="spV"></div></div>
+<div class="tbl"><table><tr><th>Key concept</th><th>Rule</th></tr>
+<tr><td><b>H₀</b></td><td>Always stated with equality — contains =, ≤, or ≥</td></tr>
+<tr><td><b>α</b></td><td>Set before seeing data — typically 0.05 or 0.01</td></tr>
+<tr><td><b>5</b></td><td>Steps in every test — same framework, always</td></tr>
+<tr><td><b>p ≤ α</b></td><td>The decision rule — reject H₀ when this holds</td></tr></table></div>
+</section>
+
+<!-- ============ PRACTICE ============ -->
+<section id="practice" data-nav="Tests for means|Practice problems">
+<h2>Practice Problems: Test Yourself</h2>
+<p>Work through these problems independently using the five-step framework. Solutions and hints are provided below each problem to check your work. These problems cover a range of real-world scenarios and test types.</p>
+<div id="probs"></div>
+</section>
+
+<!-- ============ CHI ============ -->
+<section id="chi" data-nav="Categorical data|Chi-square: introduction">
+<h2>The Chi-Square Test: Introduction</h2>
+<p>So far, we have tested claims about means (averages). But what if your data is not numbers — what if it is categories? For example: favourite color, yes/no answers, blood type.</p>
+<p>The Chi-Square (χ²) test is designed for categorical data. Think of it like checking whether the pieces in a bag are arranged the way we expect.</p>
+<div class="grid2"><div class="card tint-blue"><h4>Chi-Square Goodness of Fit Test</h4><p>Tests whether <b>one</b> categorical variable matches an expected distribution.</p><p class="cap">Example: Are birthday months spread evenly across the year?</p></div>
+<div class="card tint-teal"><h4>Chi-Square Test of Independence</h4><p>Tests whether <b>two</b> categorical variables are related to each other.</p><p class="cap">Example: Is favorite color related to class year?</p></div></div>
+<p class="cap">χ² is pronounced "kai-squared".</p>
+<h3>The Chi-Square Statistic: The Core Formula (Simplified)</h3>
+<p>The chi-square statistic measures how far your observed data is from what you expected. The bigger the gap, the bigger the value, and the more suspicious we are of the null hypothesis.</p>
+<div class="eq">χ² = Σ <span class="fr"><span>(Observed − Expected)²</span><span>Expected</span></span></div>
+<div class="grid2">
+<div class="card"><h4>Observed (O)</h4><p>What you actually counted in your data</p></div>
+<div class="card"><h4>Expected (E)</h4><p>What you would expect if the null hypothesis were true</p></div>
+<div class="card"><h4>(O − E)²</h4><p>Squaring makes all differences positive and punishes big gaps more</p></div>
+<div class="card"><h4>Dividing by E</h4><p>Scales the gap relative to how big E is</p></div></div>
+<p>If χ² ≈ 0, your data matches expectations perfectly. If χ² is large, something is off. Degrees of freedom: df = number of categories − 1 for goodness of fit.</p>
+<div class="lab"><h4>The shape of the chi-square distribution</h4>
+<div class="ctl"><label>Degrees of freedom<input type="range" id="cDf" min="1" max="10" value="2"><output></output></label>
+<label>α<select id="cA"><option value="0.1">0.10</option><option value="0.05" selected>0.05</option><option value="0.01">0.01</option></select></label>
+<label>Your χ² value<input type="range" id="cX" min="0" max="20" step="0.01" value="2.68"><output></output></label></div>
+<div id="cPlot"></div>
+<div class="stats"><div class="stat"><span>Critical value</span><b id="cCrit"></b></div><div class="stat"><span>p-value for your χ²</span><b id="cP"></b></div></div>
+<div class="verdict" id="cV"></div></div>
+</section>
+
+<!-- ============ GOF ============ -->
+<section id="gof" data-nav="Categorical data|Goodness of fit">
+<h2>Chi-Square Goodness of Fit Test: Does Reality Match the Claim?</h2>
+<p>Sometimes a company makes a claim like "our customers are split equally across all regions" or "our product sells in these exact proportions." The Goodness of Fit test helps you check: is that claim actually true?</p>
+<p>Think of it like a vending machine that is supposed to give out 4 snack types equally. If you check 100 buys and one snack shows up way more than the others, you would wonder: is something wrong, or is it just luck? The Goodness of Fit test gives you a scientific answer.</p>
+<h3>When do you use it?</h3>
+<ul class="tick"><li>You have one category to look at, like product type, region, or day of the week</li><li>Someone has made a claim about how the data should be split</li><li>You want to check if the real data matches that claim</li></ul>
+<h3>How does it work?</h3>
+<p>You compare what you actually saw with what you expected based on the claim. For each category, you ask: how far off is the real count from the expected count? Then you add up all those gaps to get the chi-square value. The bigger the value, the more the data disagrees with the claim.</p>
+<div class="grid2"><div class="card"><h4>Equal split claimed</h4><p>Example: "All 4 regions help equally with sales, so each one gets 25%."</p><p>Expected count = total ÷ number of categories</p></div>
+<div class="card"><h4>Unequal split claimed</h4><p>Example: "North = 40%, South = 30%, East = 20%, West = 10%."</p><p>Expected count = total × claimed share</p></div></div>
+<div class="grid2"><div class="card"><h4>One simple formula</h4><p><b>E = n × p</b></p><p>Expected count = total observations × the claimed share for that category.</p></div>
+<div class="card"><h4>Degrees of freedom</h4><p><b>df = number of categories − 1.</b> So if you have 4 categories, df = 3.</p></div></div>
+<p>Remember: H₀ says the claim is correct. A large χ² means the data does not match the claim, so we start to doubt H₀.</p>
+
+<h3>Solved Example 3: Are Pizza Orders Matching the Marketing Forecast? (Goodness of Fit)</h3>
+<div class="card"><p><b>Problem:</b> A regional pizza chain's marketing team claims that orders are distributed as follows based on historical data: Margherita 40%, Pepperoni 35%, BBQ Chicken 25%. The operations manager collects a random sample of 200 orders from last month and records: Margherita 70, Pepperoni 80, BBQ Chicken 50. The manager wants to know: has the order distribution shifted from the marketing forecast? Test at α = 0.05.</p></div>
+<div id="ex3steps"></div>
+<div class="call"><h4>Business Insight</h4><p>Interestingly, Pepperoni orders (80) exceeded the forecast (70) while Margherita underperformed (70 vs 80 expected). However, these differences are not large enough to be statistically significant. The manager should monitor trends over the next quarter before revising the marketing strategy.</p></div>
+<div class="lab"><h4>Change the counts and test the claim</h4>
+<div class="row"><button class="btn sm on" data-sc="pizza">Pizza forecast (unequal split)</button><button class="btn sm" data-sc="snack">Vending machine (equal split)</button><button class="btn sm" data-reset="1">Reset to example data</button><button class="btn sm" data-shift="1">Show a shifted pattern</button></div>
+<div class="ctl" id="gofSl"></div><div id="gofBars"></div>
+<div class="tbl"><table id="gofTbl"></table></div>
+<div id="gofPlot"></div><div class="verdict" id="gofV"></div></div>
+</section>
+
+<!-- ============ INDEPENDENCE ============ -->
+<section id="indep" data-nav="Categorical data|Test of independence">
+<h2>Chi-Square Test of Independence: Are Two Things Related?</h2>
+<p>Sometimes we want to know: are two categorical variables connected, or are they completely independent of each other? Does smoking affect whether someone gets lung disease? Is gender related to preferred music genre? These are independence questions.</p>
+<p>To answer these, data is arranged in a contingency table (also called a cross-tabulation). Rows represent one variable, and columns represent another variable.</p>
+<div class="tbl"><table><tr><th></th><th>Likes Pizza</th><th>Dislikes Pizza</th><th>Row Total</th></tr><tr><td>Male</td><td>?</td><td>?</td><td>?</td></tr><tr><td>Female</td><td>?</td><td>?</td><td>?</td></tr><tr><td>Col Total</td><td>?</td><td>?</td><td>?</td></tr></table></div>
+<p><b>Hypotheses for independence test:</b></p>
+<ul class="tick"><li>H₀: The two variables are independent (not related)</li><li>H₁: The two variables are NOT independent (they are related)</li></ul>
+<p><b>How to calculate the expected value for each cell:</b></p>
+<div class="eq">E = <span class="fr"><span>Row Total × Column Total</span><span>Grand Total</span></span></div>
+<p>If the two variables were truly independent, this is how many counts we'd expect in each cell.</p>
+<p><b>Degrees of freedom:</b> df = (rows − 1) × (columns − 1)</p>
+
+<h3>Solved Example 4: Gender &amp; Preference for Online Learning (Test of Independence)</h3>
+<div class="card"><p><b>Problem:</b> A researcher wants to know whether gender is related to preference for online vs in-person learning. She surveys 100 students and records the contingency table below. Test at α = 0.05 whether gender and learning preference are independent.</p>
+<div class="tbl"><table><tr><th></th><th>Online</th><th>In-Person</th><th>Row Total</th></tr><tr><td>Male</td><td>30</td><td>20</td><td>50</td></tr><tr><td>Female</td><td>20</td><td>30</td><td>50</td></tr><tr><td>Column Total</td><td>50</td><td>50</td><td>100</td></tr></table></div></div>
+<div id="ex4steps"></div>
+<div class="lab"><h4>Edit the table and see when the relationship appears</h4>
+<div class="row"><button class="btn sm" data-p="30,20,20,30">Example 4 data</button><button class="btn sm" data-p="25,25,25,25">Perfectly independent</button><button class="btn sm" data-p="45,5,5,45">Strong relationship</button><button class="btn sm" data-p="12,3,25,10">Small expected counts</button></div>
+<div class="tbl"><table id="inTbl"></table></div>
+<div id="inBars"></div><div id="inPlot"></div><div class="verdict" id="inV"></div></div>
+</section>
+
+<!-- ============ CHI NOTES ============ -->
+<section id="chinotes" data-nav="Categorical data|Chi-square assumptions">
+<h2>Chi-Square: Assumptions, Limitations &amp; Common Pitfalls</h2>
+<h3>Assumptions (must be met before running the test)</h3>
+<div class="grid2">
+<div class="card"><h4>Categorical data</h4><p>Chi-square only works with counts/frequencies, not means or percentages directly.</p></div>
+<div class="card"><h4>Independence of observations</h4><p>Each person/item should only appear once in the table.</p></div>
+<div class="card"><h4>Expected frequency rule</h4><p>Every expected cell count (E) should be at least 5. If not, the chi-square approximation breaks down. (Tip: if some E values are below 5, consider combining categories or using Fisher's Exact Test instead.)</p></div>
+<div class="card"><h4>Random sampling</h4><p>Data should come from a random sample.</p></div></div>
+<h3>Common Pitfalls</h3>
+<div class="call bad"><p>❌ Using raw percentages instead of counts — always use actual counts (frequencies) in the table.</p><p>❌ Confusing "no relationship" with "proven independence" — failing to reject H₀ does NOT prove the variables are independent, just that we don't have enough evidence.</p><p>❌ Ignoring small expected counts — if E &lt; 5 in any cell, your result may be unreliable.</p><p>❌ Thinking chi-square tells you HOW STRONG the relationship is — it only tells you IF a relationship exists.</p></div>
+<h3>Quick Reference</h3>
+<div class="call"><p><b>Goodness of Fit:</b> df = k − 1 (k = number of categories)</p><p><b>Test of Independence:</b> df = (r − 1)(c − 1) (r = rows, c = columns)</p><p>Always use COUNTS, not percentages</p><p>All expected values ≥ 5</p></div>
+</section>
+
+<!-- ============ ANOVA ============ -->
+<section id="anova" data-nav="Comparing groups|ANOVA">
+<h2>ANOVA: Comparing More Than Two Groups</h2>
+<p>Imagine you are a manager testing whether three different training programs lead to different employee performance scores. You could run multiple t-tests — but that increases your chance of making an error. ANOVA does it all in one go, safely.</p>
+<p>ANOVA = Analysis of Variance. Despite the name, it is actually used to compare <b>means</b> — not variances. The name comes from the method it uses under the hood.</p>
+<h3>When do you use ANOVA?</h3>
+<ul class="tick"><li>You have one numerical outcome variable (e.g. test score, sales, time)</li><li>You have one categorical grouping variable with 3 or more groups (e.g. training method A, B, C)</li><li>You want to know: do at least some of these groups have different means?</li></ul>
+<p>ANOVA works by comparing two things:</p>
+<ol><li>How much do scores vary <b>between</b> groups? Are the group averages far apart?</li><li>How much do scores vary <b>within</b> groups? Are individual scores spread out inside each group?</li></ol>
+<p>If the between-group variation is much larger than the within-group variation, something real is going on — the groups are genuinely different.</p>
+<h3>Hypotheses</h3>
+<ul class="tick"><li>H₀: All group means are equal (μ₁ = μ₂ = μ₃ = ...)</li><li>H₁: At least one group mean is different</li></ul>
+<div class="call warn"><p><b>Quick note:</b> ANOVA tells you that at least one group is different — but not which one. For that, you need a follow-up test called a <b>Post-Hoc test</b> (like Tukey's test). We will not go into that here, but good to know it exists.</p></div>
+<h3>The test statistic: F-ratio</h3>
+<div class="eq">F = <span class="fr"><span>Variation between groups</span><span>Variation within groups</span></span></div>
+<p>Plain English: If F is close to 1, the groups are similar. If F is large, at least one group stands out.</p>
+<h3>Formula section</h3>
+<div class="eq">F = MS<sub>between</sub> / MS<sub>within</sub><br>MS<sub>between</sub> = SS<sub>between</sub> / df<sub>between</sub> &nbsp;&nbsp; MS<sub>within</sub> = SS<sub>within</sub> / df<sub>within</sub></div>
+<div class="grid2">
+<div class="card tint-blue"><h4>SS_between — Between-Group Sum of Squares</h4><p>This measures how far each group's average is from the overall average. If the groups have very different means, this number will be large.</p><p><b>Formula:</b> SS_between = Σ nᵢ × (x̄ᵢ − x̄_grand)²</p><p><b>Plain English:</b> For each group, find the gap between that group's mean and the grand mean. Square it, multiply by the group size, then add them all up.</p></div>
+<div class="card tint-amb"><h4>SS_within — Within-Group Sum of Squares</h4><p>This measures how spread out the individual scores are inside each group. If people in the same group have very different scores, this number will be large.</p><p><b>Formula:</b> SS_within = Σ Σ (xᵢⱼ − x̄ᵢ)²</p><p><b>Plain English:</b> For every single data point, find the gap between that score and its group's mean. Square it, then add them all up across all groups.</p></div></div>
+<div class="card"><h4>Degrees of freedom</h4><p>df_between = number of groups − 1<br>df_within = total number of observations − number of groups</p><p><b>MS = SS / df.</b> Plain English: MS just means "average variation". We divide by degrees of freedom to make the comparison fair regardless of sample size.</p></div>
+<ul class="tick"><li>If F ≈ 1 → the groups are not very different (variation between ≈ variation within)</li><li>If F ≫ 1 → at least one group stands out as genuinely different</li></ul>
+<p>We compare F to a critical value from the F-table to make the final call.</p>
+
+<h3>Solved Example 5: Do Different Store Layouts Affect Sales? (ANOVA)</h3>
+<div class="card"><p>A retail company tests three store layouts (A, B, C) to see which drives the most daily sales (in $000s). They assign 5 stores to each layout and record one week of sales. Test at α = 0.05.</p>
+<div class="tbl"><table><tr><th>Store</th><th>Layout A ($000s)</th><th>Layout B ($000s)</th><th>Layout C ($000s)</th></tr><tr><td>Store 1</td><td>12</td><td>18</td><td>10</td></tr><tr><td>Store 2</td><td>15</td><td>20</td><td>11</td></tr><tr><td>Store 3</td><td>14</td><td>19</td><td>13</td></tr><tr><td>Store 4</td><td>13</td><td>21</td><td>12</td></tr><tr><td>Store 5</td><td>16</td><td>17</td><td>14</td></tr><tr><td><b>Group Mean</b></td><td>14</td><td>19</td><td>12</td></tr></table></div><p>Grand Mean (average of all 15 values) = 15</p></div>
+<div id="ex5steps"></div>
+<div class="lab"><h4>Between vs. within: pull the groups apart, or blur them</h4>
+<p class="cap">Edit any cell, or use the sliders. Notice that F rises when the group means separate and falls when scores scatter more inside each group.</p>
+<div class="ctl"><label>Move Layout B's average (shift, $000s)<input type="range" id="anSh" min="-8" max="4" step="0.5" value="0"><output></output></label>
+<label>Spread within groups (× original)<input type="range" id="anK" min="0.3" max="4" step="0.1" value="1"><output></output></label></div>
+<div class="tbl"><table id="anTbl"></table></div>
+<div id="anDots"></div><div id="anPlot"></div>
+<div class="tbl"><table id="anSum"></table></div><div class="verdict" id="anV"></div>
+<div class="row"><button class="btn sm" id="anReset">Reset</button></div></div>
+</section>
+
+<!-- ============ TWO SAMPLE ============ -->
+<section id="twot" data-nav="Comparing groups|Two-sample t-test">
+<h2>The Two-Sample t-Test: Comparing Two Groups</h2>
+<p>So far, the t-test we covered compared ONE group to a fixed claim (e.g. "is our average different from 72?"). But what if you want to compare TWO groups against each other? That is exactly what the Two-Sample t-Test does.</p>
+<p>Think of it like a race between two runners. You don't care how fast each one is in absolute terms — you just want to know: is one genuinely faster than the other, or is the difference just luck?</p>
+<h3>When do you use it?</h3>
+<ul class="tick"><li>You have TWO independent groups (e.g. Group A and Group B)</li><li>You want to compare their means</li><li>You do NOT know the population standard deviation (which is almost always the case in real life)</li><li>The two groups are separate — people in Group A are NOT the same people as in Group B</li></ul>
+<h3>Hypotheses</h3>
+<ul class="tick"><li>H₀: The two group means are equal (μA = μB) — there is no real difference</li><li>H₁: The two group means are NOT equal (μA ≠ μB) — there IS a real difference</li></ul>
+<h3>The Formula — broken down clearly</h3>
+<div class="eq">t = <span class="fr"><span>x̄<sub>A</sub> − x̄<sub>B</sub></span><span>√( s<sub>A</sub>²/n<sub>A</sub> + s<sub>B</sub>²/n<sub>B</sub> )</span></span></div>
+<h3>Break down every single piece</h3>
+<div class="grid2">
+<div class="card"><h4>x̄A and x̄B</h4><p>the sample means of Group A and Group B. "This is just the average of each group."</p></div>
+<div class="card"><h4>sA² and sB²</h4><p>the sample variances of each group (variance = standard deviation squared). "This tells us how spread out the scores are in each group."</p></div>
+<div class="card"><h4>nA and nB</h4><p>the number of observations in each group. "Bigger samples = more reliable estimates."</p></div>
+<div class="card"><h4>sA²/nA and sB²/nB</h4><p>the variance contribution of each group. "We divide by n to account for sample size — larger samples reduce uncertainty."</p></div>
+<div class="card"><h4>√(sA²/nA + sB²/nB)</h4><p>the <b>Standard Error</b> of the difference. "This is the key denominator. It measures how much the difference between the two means could vary just by chance."</p></div>
+<div class="card"><h4>t</h4><p>the final ratio. "How many standard errors apart are the two group means? The bigger this number, the more evidence we have that the groups are truly different."</p></div></div>
+<h3>Degrees of freedom</h3>
+<div class="eq">df ≈ min(n<sub>A</sub> − 1, n<sub>B</sub> − 1)</div>
+<p>"A simple approximation: use whichever group is smaller, subtract 1. This is slightly conservative but easy to apply."</p>
+<h3>Decision rule</h3>
+<p>"If |t| &gt; t_critical → Reject H₀. The two groups are significantly different."</p>
+<div class="call"><p>The two-sample t-test is the statistical engine behind <b>A/B testing</b>. When a company compares Version A vs Version B, this is the test running under the hood.</p></div>
+<div class="lab"><h4>The race: are two groups really different?</h4>
+<p class="cap">Move group B's average, or the sample size. The bottom chart shows where each group's average could plausibly sit; the less they overlap, the bigger |t|.</p>
+<div id="tsCalc"></div></div>
+</section>
+
+<!-- ============ AB ============ -->
+<section id="ab" data-nav="Comparing groups|A/B testing">
+<h2>A/B Testing: Which Version Actually Works Better?</h2>
+<p>You have probably seen A/B testing in the real world without knowing it. When Netflix shows two different thumbnail designs to different users to see which one gets more clicks — that is A/B testing. When an e-commerce site tests two versions of a "Buy Now" button to see which one drives more sales — that is A/B testing too.</p>
+<p>A/B testing is simply comparing two versions of something to see which one performs better. Version A is usually the current version (the control). Version B is the new version (the change you want to test). You split your audience randomly into two groups — one sees A, the other sees B — and then measure the outcome.</p>
+<div class="grid2"><div class="card tint-blue"><h4>Version A (Control)</h4><p>The existing version. This is your baseline. You already know how it performs.</p></div>
+<div class="card tint-amb"><h4>Version B (Treatment)</h4><p>The new version. You made one change — a new headline, a different colour, a new price. You want to know: did that change make a difference?</p></div></div>
+<p>After running the test, you collect data from both groups. Then you run a hypothesis test — usually a two-sample t-test or a z-test — to check whether the difference in results between A and B is real, or just random chance.</p>
+<h3>Hypotheses</h3>
+<ul class="tick"><li>H₀: There is no difference between A and B (any difference is just random chance)</li><li>H₁: There IS a real difference between A and B</li></ul>
+<h3>Key things to keep in mind</h3>
+<ul class="tick"><li>Only change ONE thing at a time — otherwise you won't know what caused the difference</li><li>Run the test long enough to collect sufficient data — stopping too early gives misleading results</li><li>Use random assignment — each user should be randomly assigned to A or B, not chosen by hand</li><li>Choose your significance level BEFORE running the test (usually α = 0.05)</li></ul>
+<div class="call"><p>A/B testing is just a two-sample hypothesis test in disguise. The "A" group and "B" group are your two samples. The question is always the same: is the difference between the two groups real, or could it have happened by chance?</p></div>
+<h3>Solved Example 6: Does a New Checkout Page Increase Sales? (A/B Test)</h3>
+<div class="card"><p>An e-commerce company redesigned their checkout page and wants to know if it leads to higher average order values. They randomly assign 40 customers to each version and measure order values (in $). Test at α = 0.05.</p>
+<div class="tbl"><table><tr><th>Summary</th><th>Version A (Current)</th><th>Version B (New Page)</th></tr><tr><td>Sample Size (n)</td><td>40</td><td>40</td></tr><tr><td>Sample Mean (x̄)</td><td>$85</td><td>$94</td></tr><tr><td>Std Deviation (s)</td><td>$18</td><td>$20</td></tr></table></div><p>Difference in means = $94 − $85 = $9</p></div>
+<div id="ex6steps"></div>
+<div class="lab"><h4>Run your own A/B test</h4><p class="cap">Starts with the checkout-page numbers. Try shrinking n per group: the same $9 difference stops being convincing.</p><div id="abCalc"></div>
+<div class="ctl"><label>Orders per month<input type="range" id="abOrd" min="1000" max="50000" step="500" value="10000"><output></output></label></div>
+<div class="verdict keep" id="abRev"></div></div>
+<div class="call"><h4>What made this an A/B test?</h4><ul class="tick"><li>Two randomly assigned groups</li><li>One thing changed (checkout page design)</li><li>Measured a numerical outcome (order value)</li><li>Used a two-sample t-test to compare means</li><li>Made a business decision based on the result</li></ul></div>
+</section>
+
+<div class="foot">Interactive companion to "Hypothesis Testing: A Complete Beginner's Guide". All probabilities are computed live in your browser.</div>
+</main>
+</div>
+
+<script>
+/* ================= math ================= */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function erf(x){const s=x<0?-1:1;x=Math.abs(x);const t=1/(1+.3275911*x);return s*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x));}
+const Phi=x=>.5*(1+erf(x/Math.SQRT2)),phi=x=>Math.exp(-x*x/2)/Math.sqrt(2*Math.PI);
+function lg(z){const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,.1208650973866179e-2,-.5395239384953e-5];let x=z,y=z,t=x+5.5;t-=(x+.5)*Math.log(t);let s=1.000000000190015;for(const k of c)s+=k/++y;return -t+Math.log(2.5066282746310005*s/x);}
+function betacf(x,a,b){const F=1e-300;let qab=a+b,qap=a+1,qam=a-1,c=1,d=1-qab*x/qap;if(Math.abs(d)<F)d=F;d=1/d;let h=d;for(let m=1;m<=200;m++){const m2=2*m;let aa=m*(b-m)*x/((qam+m2)*(a+m2));d=1+aa*d;if(Math.abs(d)<F)d=F;c=1+aa/c;if(Math.abs(c)<F)c=F;d=1/d;h*=d*c;aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));d=1+aa*d;if(Math.abs(d)<F)d=F;c=1+aa/c;if(Math.abs(c)<F)c=F;d=1/d;const del=d*c;h*=del;if(Math.abs(del-1)<3e-12)break;}return h;}
+function ibeta(x,a,b){if(x<=0)return 0;if(x>=1)return 1;const bt=Math.exp(lg(a+b)-lg(a)-lg(b)+a*Math.log(x)+b*Math.log(1-x));return x<(a+1)/(a+b+2)?bt*betacf(x,a,b)/a:1-bt*betacf(1-x,b,a)/b;}
+const tCdf=(t,v)=>{const p=.5*ibeta(v/(v+t*t),v/2,.5);return t>0?1-p:p;};
+const tpdf=(x,v)=>Math.exp(lg((v+1)/2)-lg(v/2))/Math.sqrt(v*Math.PI)*Math.pow(1+x*x/v,-(v+1)/2);
+function gammp(a,x){if(x<=0)return 0;if(x<a+1){let ap=a,s=1/a,del=s;for(let n=0;n<300;n++){ap++;del*=x/ap;s+=del;if(Math.abs(del)<Math.abs(s)*1e-12)break;}return s*Math.exp(-x+a*Math.log(x)-lg(a));}
+let b=x+1-a,c=1e300,d=1/b,h=d;for(let i=1;i<300;i++){const an=-i*(i-a);b+=2;d=an*d+b;if(Math.abs(d)<1e-300)d=1e-300;c=b+an/c;if(Math.abs(c)<1e-300)c=1e-300;d=1/d;const del=d*c;h*=del;if(Math.abs(del-1)<1e-12)break;}return 1-Math.exp(-x+a*Math.log(x)-lg(a))*h;}
+const chiCdf=(x,k)=>gammp(k/2,x/2);
+const chipdf=(x,k)=>x<=0?0:Math.exp((k/2-1)*Math.log(x)-x/2-(k/2)*Math.log(2)-lg(k/2));
+const fCdf=(f,a,b)=>f<=0?0:ibeta(a*f/(a*f+b),a/2,b/2);
+const fpdf=(x,a,b)=>x<=0?0:Math.exp(lg((a+b)/2)-lg(a/2)-lg(b/2)+(a/2)*Math.log(a/b)+(a/2-1)*Math.log(x)-((a+b)/2)*Math.log(1+a*x/b));
+function inv(cdf,p,lo,hi){for(let i=0;i<90;i++){const m=(lo+hi)/2;cdf(m)<p?lo=m:hi=m;}return(lo+hi)/2;}
+const qnorm=p=>inv(Phi,p,-10,10),qt=(p,v)=>inv(x=>tCdf(x,v),p,-500,500),qchi=(p,k)=>inv(x=>chiCdf(x,k),p,0,600),qf=(p,a,b)=>inv(x=>fCdf(x,a,b),p,0,5000);
+const randn=()=>Math.sqrt(-2*Math.log(1-Math.random()))*Math.cos(2*Math.PI*Math.random());
+const fmt=(x,d=3)=>isFinite(x)?(+x).toFixed(d):'—';
+const fp=p=>p<1e-4?'< 0.0001':p.toFixed(4);
+const niceStep=r=>{const raw=r/7,m=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/m;return(f<1.5?1:f<3.5?2:f<7.5?5:10)*m;};
+const syncOut=r=>{const o=r.nextElementSibling;if(o&&o.tagName==='OUTPUT')o.textContent=r.value;};
+document.addEventListener('input',e=>{if(e.target.type==='range')syncOut(e.target);});
+
+/* ================= charts ================= */
+function plot(el,o){const W=640,H=o.h||250,L=20,R=20,T=44,B=30,{xmin,xmax}=o,sx=x=>L+(x-xmin)/(xmax-xmin)*(W-L-R);
+ const N=260,X=[...Array(N+1)].map((_,i)=>xmin+(xmax-xmin)*i/N);
+ const ym=o.ymax||Math.max(...o.fns.flatMap(c=>X.map(c.f)).filter(isFinite))*1.12;
+ const sy=y=>H-B-Math.min(Math.max(y,0),ym)/ym*(H-B-T);
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.label||'Probability curve'}">`;
+ (o.shades||[]).forEach(h=>{const f=h.f||o.fns[0].f,a=Math.max(h.a,xmin),b=Math.min(h.b,xmax);if(b<=a)return;const P=[a,...X.filter(x=>x>a&&x<b),b];s+=`<path class="${h.cls||'sh-rej'}" d="M${sx(a)},${sy(0)} `+P.map(x=>`L${sx(x)},${sy(f(x))}`).join(' ')+` L${sx(b)},${sy(0)}Z"/>`;});
+ o.fns.forEach(c=>{s+=`<path class="cv ${c.cls||'cv-blue'}" d="`+X.map((x,i)=>(i?'L':'M')+sx(x)+','+sy(c.f(x))).join(' ')+`"/>`;});
+ s+=`<line class="ax" x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}"/>`;
+ const st=o.step||niceStep(xmax-xmin);for(let t=Math.ceil(xmin/st-1e-9)*st;t<=xmax+1e-9;t+=st){s+=`<line class="ax" x1="${sx(t)}" x2="${sx(t)}" y1="${H-B}" y2="${H-B+5}"/><text x="${sx(t)}" y="${H-B+19}" text-anchor="middle">${+t.toFixed(2)}</text>`;}
+ (o.lines||[]).forEach(l=>{if(l.x<xmin||l.x>xmax)return;const y0=T-26+(l.row||0)*15;s+=`<line class="ln ${l.cls||'ln-ink'}" x1="${sx(l.x)}" x2="${sx(l.x)}" y1="${y0+5}" y2="${H-B}"/><text x="${sx(l.x)}" y="${y0}" text-anchor="middle" style="fill:var(--ink);font-weight:700">${l.label}</text>`;});
+ if(o.legend)o.legend.forEach((g,i)=>{s+=`<text x="${W-R}" y="${T-26+i*15}" text-anchor="end" style="fill:${g[1]};font-weight:700">${g[0]}</text>`;});
+ el.innerHTML=s+'</svg>';}
+function bars(el,o){const W=640,H=o.h||240,L=20,R=16,T=18,B=42,nC=o.cats.length,slot=(W-L-R)/nC;
+ const ym=o.ymax||Math.max(...o.series.flatMap(s=>s.vals))*1.18,ys=v=>H-B-v/ym*(H-B-T);
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.label||'Bar chart'}"><line class="ax" x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}"/>`;
+ o.cats.forEach((c,i)=>{const cx=L+slot*(i+.5);
+  o.series.forEach((sr,j)=>{const ns=o.series.length,bw=o.overlay?slot*(j?.36:.84):slot*.8/ns,x=o.overlay?cx-bw/2:L+slot*i+slot*.1+j*bw,cls=typeof sr.cls==='function'?sr.cls(i):sr.cls,y=ys(sr.vals[i]);
+   s+=`<rect class="${cls}" x="${x}" y="${y}" width="${bw}" height="${Math.max(H-B-y,0)}" rx="2"/>`;
+   if(o.vlab&&!o.overlay)s+=`<text x="${x+bw/2}" y="${y-4}" text-anchor="middle">${o.vlab(sr.vals[i])}</text>`;});
+  const lb=o.lab?o.lab(i):c;if(lb!=='')s+=`<text x="${cx}" y="${H-B+17}" text-anchor="middle">${lb}</text>`;});
+ if(o.xtitle)s+=`<text x="${W/2}" y="${H-5}" text-anchor="middle">${o.xtitle}</text>`;
+ if(o.legend)o.legend.forEach((g,i)=>{s+=`<text x="${W-R}" y="${14+i*15}" text-anchor="end" style="fill:${g[1]};font-weight:700">${g[0]}</text>`;});
+ el.innerHTML=s+'</svg>';}
+const tailShade=(tl,cr,f)=>tl==='two'?[{a:-99,b:-cr,f},{a:cr,b:99,f}]:tl==='right'?[{a:cr,b:99,f}]:[{a:-99,b:-cr,f}];
+const critLines=(tl,cr,row=1)=>(tl==='two'?[-cr,cr]:tl==='right'?[cr]:[-cr]).map(x=>({x,label:fmt(x,3),cls:'ln-rej',row}));
+function steps(id,list){const r=$('#'+id);r.innerHTML='<div class="row"><button class="btn sm" data-exp>Expand all steps</button></div>'+list.map((s,i)=>`<details class="step"${i==0?' open':''}><summary><span class="n">${i+1}</span>${s[0]}</summary><div>${s[1]}</div></details>`).join('');
+ r.querySelector('[data-exp]').onclick=e=>{const ds=r.querySelectorAll('details'),all=[...ds].every(d=>d.open);ds.forEach(d=>d.open=!all);e.target.textContent=all?'Expand all steps':'Collapse all steps';};}
+
+/* ================= nav ================= */
+(function(){const nav=$('nav.side');let g='',h='';$$('main section[data-nav]').forEach(s=>{const[gr,t]=s.dataset.nav.split('|');if(gr!==g){h+=`<b>${gr}</b>`;g=gr;}h+=`<a href="#${s.id}">${t}</a>`;});nav.innerHTML=h;
+ const links=$$('nav.side a');const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>{const on=l.getAttribute('href')==='#'+e.target.id;l.classList.toggle('on',on);if(on&&innerWidth<=900)l.scrollIntoView({inline:'center',block:'nearest'});});}),{rootMargin:'-15% 0px -75% 0px'});$$('main section[id]').forEach(s=>io.observe(s));})();
+
+/* ================= courtroom ================= */
+(function(){const r=$('#evid');function f(){const v=+r.value;$('#evBar').style.width=v+'%';const o=$('#evOut');if(v>=95){o.className='verdict rej';o.textContent='The evidence clears the burden of proof: reject the assumption of innocence (reject H₀).';}else{o.className='verdict keep';o.textContent='Not enough evidence to overturn the assumption of innocence: fail to reject H₀. (That is not the same as proving innocence.)';}}r.oninput=f;f();})();
+
+/* ================= coin ================= */
+(function(){const pm=[...Array(101)].map((_,k)=>Math.exp(lg(101)-lg(k+1)-lg(101-k)+100*Math.log(.5)));let sim=null;const sl=$('#coinK');
+ function draw(){const k=+sl.value,cats=[],v=[];for(let i=35;i<=85;i++){cats.push(i);v.push(pm[i]);}let p=0;for(let i=k;i<=100;i++)p+=pm[i];
+  const ser=[{vals:v,cls:i=>cats[i]>=k?'b-rej':'b-blue'}];if(sim)ser.push({vals:cats.map(c=>sim[c]/1000),cls:'b-amb'});
+  bars($('#coinPlot'),{cats,series:ser,overlay:true,lab:i=>cats[i]%5===0?cats[i]:'',xtitle:'Number of heads in 100 flips (fair coin)',label:'Distribution of heads for a fair coin'});
+  let t=`P(${k} or more heads | fair coin) = ${p<1e-4?p.toExponential(2):p.toFixed(4)}. `;t+=p<.05?'That is very unlikely for a fair coin — strong evidence the coin is biased.':'That happens fairly often with a fair coin — not enough evidence to call the coin biased.';
+  if(sim){let c=0;for(let i=k;i<=100;i++)c+=sim[i];t+=` In your 1,000 simulated fair-coin experiments, ${c} gave ${k} or more heads.`;}
+  $('#coinOut').textContent=t;}
+ sl.oninput=draw;$('#coinSim').onclick=()=>{sim=new Array(101).fill(0);for(let e=0;e<1000;e++){let h=0;for(let i=0;i<100;i++)if(Math.random()<.5)h++;sim[h]++;}draw();};$('#coinClr').onclick=()=>{sim=null;draw();};draw();})();
+
+/* ================= tails ================= */
+(function(){const info={two:['Two-tailed: the 5% is split, 2.5% in each tail, so either unusually high or unusually low sample means count as evidence.',1.96],right:['Right-tailed: all 5% sits in the upper tail, so only unusually high sample means count as evidence.',1.645],left:['Left-tailed: all 5% sits in the lower tail, so only unusually low sample means count as evidence.',1.645]};
+ function show(t){$$('#tailCards .tailcard').forEach(c=>c.classList.toggle('on',c.dataset.t===t));const cr=info[t][1];plot($('#tailPlot'),{xmin:-4,xmax:4,fns:[{f:phi}],shades:tailShade(t,cr,phi),lines:critLines(t,cr,0),label:'Rejection region'});$('#tailCap').textContent=info[t][0];}
+ $$('#tailCards .tailcard').forEach(c=>{c.onclick=()=>show(c.dataset.t);c.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();show(c.dataset.t);}};});show('two');})();
+
+/* ================= alpha ================= */
+(function(){const sl=$('#aSl'),tl=$('#aTail');function draw(){const a=+sl.value,t=tl.value,cr=qnorm(t==='two'?1-a/2:1-a);plot($('#aPlot'),{xmin:-4,xmax:4,fns:[{f:phi}],shades:tailShade(t,cr,phi),lines:critLines(t,cr,0),label:'Rejection region for alpha'});
+ $('#aCrit').textContent=(t==='two'?'±':t==='left'?'−':'+')+fmt(cr,3);$('#aFalse').textContent=(a*100).toFixed(1)+'%';}
+ sl.oninput=draw;tl.oninput=draw;$$('[data-a]').forEach(b=>b.onclick=()=>{sl.value=b.dataset.a;syncOut(sl);draw();});
+ const dots=$('#dots');dots.innerHTML='<i></i>'.repeat(100);
+ $('#dotRun').onclick=()=>{const a=+sl.value,t=tl.value,cr=qnorm(t==='two'?1-a/2:1-a);let c=0;[...dots.children].forEach(d=>{const z=randn(),r=t==='two'?Math.abs(z)>cr:t==='right'?z>cr:z<-cr;d.className=r?'r':'';if(r)c++;});$('#dotOut').textContent=` ${c} of 100 tests raised a false alarm (expected about ${(a*100).toFixed(1)}).`;};draw();})();
+
+/* ================= p-value ================= */
+(function(){const ids=['#pZ','#pTail','#pA'];function draw(){const z=+$('#pZ').value,t=$('#pTail').value,a=+$('#pA').value;
+ const p=t==='two'?2*(1-Phi(Math.abs(z))):t==='right'?1-Phi(z):Phi(z),cr=qnorm(t==='two'?1-a/2:1-a),sh=t==='two'?[{a:-99,b:-Math.abs(z)},{a:Math.abs(z),b:99}]:t==='right'?[{a:z,b:99}]:[{a:-99,b:z}];
+ plot($('#pPlot'),{xmin:-4.5,xmax:4.5,fns:[{f:phi}],shades:sh,lines:[{x:z,label:'z = '+fmt(z,2),cls:'ln-ink'},...critLines(t,cr,1)],label:'p-value area'});
+ $('#pVal').textContent=fp(p);$('#pAOut').textContent=a.toFixed(2);const v=$('#pVerd'),rej=p<=a;v.className='verdict '+(rej?'rej':'keep');
+ v.textContent=rej?`p = ${fp(p)} ≤ α = ${a}: reject H₀. This data would be rare if H₀ were true.`:`p = ${fp(p)} > α = ${a}: fail to reject H₀. This data is quite plausible under H₀.`;}
+ ids.forEach(i=>$(i).oninput=draw);draw();})();
+
+/* ================= five steps ================= */
+(function(){const S=[['State the Hypotheses','Write out H₀ and H₁ clearly using mathematical notation. Identify whether the test is two-tailed, left-tailed, or right-tailed. This step defines the entire direction of your analysis.','Cereal boxes: H₀: μ ≥ 500g, H₁: μ < 500g (left-tailed).'],
+['Choose the Significance Level (α)','Decide on α before looking at data. Also choose the appropriate test statistic — a z-test if σ is known and n is large; a t-test if σ is unknown or n is small.','Cereal boxes: α = 0.05; σ = 12g is known, so a z-test.'],
+['Compute the Test Statistic','Use the sample data to calculate a standardised score (z or t). This score measures how many standard errors the sample mean is away from the hypothesised population mean.','Cereal boxes: z = (496 − 500) / (12/√36) = −2.00.'],
+['Find the p-Value or Critical Value','Using the test statistic, find the p-value from the appropriate distribution table or software. Alternatively, identify the critical region using critical values at your chosen α.','Cereal boxes: p = P(Z < −2.00) = 0.0228; critical value −1.645.'],
+['Make a Decision and State a Conclusion','Compare p to α (or test statistic to critical value). State your conclusion in plain English in the context of the problem. Never just say "reject H₀" — always explain what that means for the real-world question.','Cereal boxes: p = 0.0228 < 0.05, so reject H₀. The machine is under-filling; recalibrate it.']];
+ const tabs=$('#fiveTabs');tabs.innerHTML=S.map((s,i)=>`<button class="btn" data-i="${i}">Step ${i+1}</button>`).join('');
+ function show(i){[...tabs.children].forEach((b,j)=>b.classList.toggle('on',i===j));$('#fiveBody').innerHTML=`<h4>Step ${i+1}: ${S[i][0]}</h4><p>${S[i][1]}</p><div class="call"><p><b>In the cereal example:</b> ${S[i][2]}</p></div>`;}
+ tabs.onclick=e=>{if(e.target.dataset.i)show(+e.target.dataset.i);};show(0);})();
+
+/* ================= one-sample calculator ================= */
+function oneSample(id,c){const root=$('#'+id),P=c.kind==='p',T=c.kind==='t',sym=P?'p':'μ',[mn,mx,st]=c.er;
+ root.innerHTML=`<div class="ctl"><label>${c.estL}<input type="number" step="any" data-k="est" value="${c.est}"></label><label>${c.nulL}<input type="number" step="any" data-k="nul" value="${c.nul}"></label>${P?'':`<label>${c.sdL}<input type="number" step="any" data-k="sd" value="${c.sd}"></label>`}<label>Sample size n<input type="number" min="2" step="1" data-k="n" value="${c.n}"></label>
+ <label>Significance level α<select data-k="a"><option value="0.1">0.10</option><option value="0.05">0.05</option><option value="0.01">0.01</option></select></label><label>Direction of H₁<select data-k="t"><option value="left">Left-tailed (&lt;)</option><option value="right">Right-tailed (&gt;)</option><option value="two">Two-tailed (≠)</option></select></label></div>
+ <div class="ctl"><label>Slide the sample ${c.estN}<input type="range" data-k="er" min="${mn}" max="${mx}" step="${st}" value="${c.est}"><output></output></label><label>Slide the sample size<input type="range" data-k="nr" min="2" max="300" value="${c.n}"><output></output></label></div>
+ <div class="hyp" data-o="hyp"></div><div data-o="plot"></div><div class="stats" data-o="res"></div><div class="verdict" data-o="v"></div>`;
+ const g=k=>root.querySelector(`[data-k=${k}]`),o=k=>root.querySelector(`[data-o=${k}]`);g('a').value=c.alpha;g('t').value=c.tail;
+ function rd(){const est=+g('est').value,nul=+g('nul').value,n=Math.max(2,Math.round(+g('n').value)),a=+g('a').value,tl=g('t').value,sd=P?Math.sqrt(nul*(1-nul)):+g('sd').value,se=sd/Math.sqrt(n),s=(est-nul)/se,df=n-1,
+  cdf=T?x=>tCdf(x,df):Phi,pdf=T?x=>tpdf(x,df):phi,q=p=>T?qt(p,df):qnorm(p),p=tl==='two'?2*(1-cdf(Math.abs(s))):tl==='right'?1-cdf(s):cdf(s),cr=q(tl==='two'?1-a/2:1-a),rej=p<=a,nm=T?'t':'z',xr=Math.max(4,Math.abs(s)+.8);
+  const h={left:[`${sym} ≥ ${nul}`,`${sym} < ${nul}`],right:[`${sym} ≤ ${nul}`,`${sym} > ${nul}`],two:[`${sym} = ${nul}`,`${sym} ≠ ${nul}`]}[tl];
+  o('hyp').innerHTML=`<span><b>H₀:</b> ${h[0]}</span><span><b>H₁:</b> ${h[1]}</span>`;
+  plot(o('plot'),{xmin:-xr,xmax:xr,fns:[{f:pdf}],shades:tailShade(tl,cr,pdf),lines:[{x:s,label:`${nm} = ${fmt(s,2)}`,cls:'ln-ink'},...critLines(tl,cr,1)],label:'Test statistic and rejection region'});
+  o('res').innerHTML=`<div class="stat"><span>Standard error</span><b>${fmt(se,3)}</b></div><div class="stat"><span>Test statistic ${nm}</span><b>${fmt(s,3)}</b></div>${T?`<div class="stat"><span>df</span><b>${df}</b></div>`:''}<div class="stat"><span>Critical value</span><b>${tl==='two'?'±':tl==='left'?'−':''}${fmt(cr,3)}</b></div><div class="stat"><span>p-value</span><b>${fp(p)}</b></div>`;
+  const v=o('v');v.className='verdict '+(rej?'rej':'keep');v.textContent=rej?`Reject H₀ (p = ${fp(p)} ≤ α = ${a}). There is sufficient evidence at the ${a*100}% level to support H₁.`:`Fail to reject H₀ (p = ${fp(p)} > α = ${a}). Not enough evidence for H₁. (This does not prove H₀ is true.)`;}
+ root.addEventListener('input',e=>{const k=e.target.dataset.k;if(k==='er')g('est').value=e.target.value;if(k==='nr')g('n').value=e.target.value;if(k==='est'){g('er').value=e.target.value;syncOut(g('er'));}if(k==='n'){g('nr').value=e.target.value;syncOut(g('nr'));}rd();});rd();}
+
+/* ================= Example 1 ================= */
+steps('ex1steps',[['State the Hypotheses','<p>H₀: μ ≥ 500g (the machine is not under-filling)</p><p>H₁: μ &lt; 500g (the machine is under-filling)</p><p>This is a <b>left-tailed</b> test because the inspector suspects the mean is less than 500g.</p>'],
+['Set α and Identify Critical Value','<p>α = 0.05, left-tailed test.</p><p>Critical value: z* = −1.645</p><p>Reject H₀ if the computed z &lt; −1.645.</p>'],
+['Compute the Test Statistic','<div class="eq">z = <span class="fr"><span>496 − 500</span><span>12 / √36</span></span> = <span class="fr"><span>−4</span><span>2</span></span> = −2.00</div>'],
+['Find the p-Value','<p>For z = −2.00 (left-tailed): p = P(Z &lt; −2.00) = 0.0228. Since 0.0228 &lt; 0.05, this result is statistically significant.</p>'],
+['Decision and Conclusion','<p>Since z = −2.00 &lt; −1.645 (and p = 0.0228 &lt; 0.05), we reject H₀. There is sufficient statistical evidence at the 5% significance level to conclude that the machine is under-filling the cereal boxes. The manufacturer should recalibrate the machine.</p>']]);
+oneSample('ex1calc',{kind:'z',est:496,nul:500,sd:12,n:36,alpha:.05,tail:'left',estL:'Sample mean x̄ (g)',nulL:'Hypothesised mean μ₀ (g)',sdL:'Population σ (g)',estN:'mean',er:[488,504,.1]});
+
+/* ================= errors ================= */
+(function(){const ids=['#eD','#eN','#eA'];function draw(){const d=+$('#eD').value,n=+$('#eN').value,a=+$('#eA').value,dl=d*Math.sqrt(n),cr=qnorm(1-a),f1=x=>phi(x-dl),beta=Phi(cr-dl),pw=1-beta,xmax=Math.max(5,dl+4);
+ plot($('#ePlot'),{xmin:-4,xmax,fns:[{f:phi},{f:f1,cls:'cv-amb'}],shades:[{f:phi,a:cr,b:99,cls:'sh-rej'},{f:f1,a:-99,b:cr,cls:'sh-amb'},{f:f1,a:cr,b:99,cls:'sh-teal'}],lines:[{x:cr,label:'critical '+fmt(cr,2),cls:'ln-rej',row:1}],legend:[['H₀ true','var(--blue)'],['H₀ false (true effect)','var(--amb)']],label:'Alpha, beta and power'});
+ $('#eAo').textContent=(a*100).toFixed(1)+'%';$('#eB').textContent=(beta*100).toFixed(1)+'%';$('#eP').textContent=(pw*100).toFixed(1)+'%';
+ const v=$('#eV');v.className='verdict '+(pw>=.8?'keep':'rej');v.textContent=pw>=.8?'Power is at least 80%, generally considered adequate: this test would usually detect this effect.':'Power is below 80%: this test would often miss an effect this size. Try a larger sample size or a larger effect — or accept a larger α, at the cost of more false alarms.';}
+ ids.forEach(i=>$(i).oninput=draw);draw();})();
+
+/* ================= t dist ================= */
+(function(){const sl=$('#tDf');function draw(){const v=+sl.value,cr=qt(.975,v);plot($('#tPlot'),{xmin:-5,xmax:5,fns:[{f:phi,cls:'cv-mut'},{f:x=>tpdf(x,v)}],shades:tailShade('two',cr,x=>tpdf(x,v)),lines:critLines('two',cr,0),label:'t distribution versus normal'});$('#tCrit').textContent='±'+fmt(cr,3);}sl.oninput=draw;draw();})();
+
+/* ================= Example 2 ================= */
+steps('ex2steps',[['State the Hypotheses','<p>H₀: μ ≤ 72 (the university mean is not higher than national average)</p><p>H₁: μ &gt; 72 (the university mean is higher than national average)</p><p>This is a right-tailed t-test. df = 15 − 1 = 14.</p>'],
+['Set α and Find Critical Value','<p>α = 0.05, right-tailed, df = 14.</p><p>From the t-table: t* = 1.761</p><p>Reject H₀ if the computed t &gt; 1.761.</p>'],
+['Compute the Test Statistic','<div class="eq">t = <span class="fr"><span>76.4 − 72</span><span>8.2 / √15</span></span> = <span class="fr"><span>4.4</span><span>8.2 / 3.873</span></span> ≈ <span class="fr"><span>4.4</span><span>2.117</span></span> ≈ 2.079</div>'],
+['Compare to Critical Value','<p>Computed t = 2.079. Critical value t* = 1.761.</p><p>Since 2.079 &gt; 1.761, the test statistic falls in the rejection region.</p><p>The p-value is approximately 0.028 (between 0.025 and 0.05 for df = 14, right-tailed).</p>'],
+['Decision and Conclusion','<p>Since t = 2.079 &gt; 1.761 (and p ≈ 0.028 &lt; 0.05), we reject H₀. There is sufficient evidence at the 5% significance level to conclude that the average score of students at this university is significantly higher than the national average of 72 points.</p>']]);
+oneSample('ex2calc',{kind:'t',est:76.4,nul:72,sd:8.2,n:15,alpha:.05,tail:'right',estL:'Sample mean x̄',nulL:'Hypothesised mean μ₀',sdL:'Sample std dev s',estN:'mean',er:[66,86,.1]});
+
+/* ================= CI ================= */
+(function(){const ids=['#ciX','#ciN','#ciMu','#ciC'];function draw(){const x=+$('#ciX').value,n=+$('#ciN').value,mu=+$('#ciMu').value,C=+$('#ciC').value,se=12/Math.sqrt(n),zc=qnorm(1-(1-C)/2),lo=x-zc*se,hi=x+zc*se,inside=mu>=lo&&mu<=hi,
+ W=640,H=140,L=20,R=20,A=480,Z=516,sx=v=>L+(Math.min(Math.max(v,A),Z)-A)/(Z-A)*(W-L-R);
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Confidence interval and hypothesised mean"><line class="ax" x1="${L}" x2="${W-R}" y1="100" y2="100"/>`;
+ for(let t=A;t<=Z;t+=4)s+=`<line class="ax" x1="${sx(t)}" x2="${sx(t)}" y1="100" y2="105"/><text x="${sx(t)}" y="120" text-anchor="middle">${t}</text>`;
+ s+=`<rect x="${sx(lo)}" y="62" width="${sx(hi)-sx(lo)}" height="18" rx="4" style="fill:var(--blue);opacity:.5"/><circle cx="${sx(x)}" cy="71" r="7" style="fill:var(--blue)"/>`;
+ s+=`<line class="ln ${inside?'ln-teal':'ln-rej'}" x1="${sx(mu)}" x2="${sx(mu)}" y1="34" y2="100"/><text x="${sx(mu)}" y="26" text-anchor="middle" style="fill:var(--ink);font-weight:700">μ₀ = ${mu}</text>`;
+ s+=`<text x="${sx(lo)}" y="54" text-anchor="middle">${fmt(lo,2)}</text><text x="${sx(hi)}" y="54" text-anchor="middle">${fmt(hi,2)}</text></svg>`;$('#ciPlot').innerHTML=s;
+ const z=(x-mu)/se,p=2*(1-Phi(Math.abs(z))),a=1-C,v=$('#ciV');v.className='verdict '+(inside?'keep':'rej');
+ v.textContent=`${C*100}% CI: (${fmt(lo,2)}g, ${fmt(hi,2)}g). μ₀ = ${mu} is ${inside?'inside':'outside'} the interval → ${inside?'fail to reject':'reject'} H₀ at α = ${fmt(a,2)} (two-tailed). Check: z = ${fmt(z,2)}, p = ${fp(p)} ${p<=a?'≤':'>'} α.`;}
+ ids.forEach(i=>$(i).oninput=draw);draw();})();
+
+/* ================= practical significance ================= */
+(function(){const sl=$('#spN');function draw(){const n=+sl.value,z=.5/(10/Math.sqrt(n)),p=2*(1-Phi(z));$('#spZ').textContent=fmt(z,2);$('#spP').textContent=fp(p);const v=$('#spV');v.className='verdict '+(p<=.05?'rej':'keep');v.textContent=p<=.05?'Statistically significant — but the difference is still only 0.5 points. Always ask whether that matters in practice.':'Not statistically significant at α = 0.05 — with this sample size, a 0.5-point difference is easily explained by chance.';}sl.oninput=draw;draw();})();
+
+/* ================= practice ================= */
+(function(){const P=[
+{t:'Problem 1 — Hospital Recovery Time (t-Test)',q:'A hospital administrator claims that the mean recovery time after a routine surgery is 4.5 days. A medical researcher suspects it is actually longer. She samples n = 20 patients and finds a mean recovery time of x̄ = 5.1 days with a sample standard deviation of s = 1.4 days. Test at α = 0.01.',h:'This is a right-tailed t-test with df = 19. The critical value at α = 0.01, df = 19 (right-tailed) is t* = 2.539. Compute t and compare.',a:'t = (5.1 − 4.5) / (1.4/√20) = 0.6 / 0.313 ≈ 1.916. Since 1.916 < 2.539, we fail to reject H₀. Insufficient evidence at the 1% level to conclude recovery times are longer than 4.5 days.',v:1.916,c:{kind:'t',est:5.1,nul:4.5,sd:1.4,n:20,alpha:.01,tail:'right',estL:'Sample mean x̄ (days)',nulL:'Claimed mean μ₀ (days)',sdL:'Sample std dev s',estN:'mean',er:[4,6.5,.05]}},
+{t:'Problem 2 — Voter Approval (z-Test for Proportion)',q:'A politician claims that at least 55% of voters support her policy. In a random survey of n = 400 voters, 208 express support. Test at α = 0.05.',h:'p̂ = 208/400 = 0.52. This is a left-tailed test (H₁: p < 0.55). Critical value = −1.645.',a:'z = (0.52 − 0.55) / √(0.55 × 0.45 / 400) = −0.03 / 0.02486 ≈ −1.207. Since −1.207 > −1.645, we fail to reject H₀. Insufficient evidence to say support is below 55%.',v:-1.207,c:{kind:'p',est:.52,nul:.55,n:400,alpha:.05,tail:'left',estL:'Sample proportion p̂',nulL:'Claimed proportion p₀',estN:'proportion',er:[.4,.7,.005]}},
+{t:'Problem 3 — Coffee Cup Temperature (Two-Tailed z-Test)',q:'A coffee shop claims their lattes are served at exactly 70°C. A food safety inspector measures a random sample of n = 50 lattes and finds x̄ = 67.5°C. The population standard deviation is known to be σ = 5°C. Test at α = 0.05.',h:'Two-tailed test. Critical values: ±1.96.',a:'z = (67.5 − 70) / (5/√50) = −2.5 / 0.707 ≈ −3.54. Since |−3.54| > 1.96, we reject H₀. Strong evidence that the lattes are not served at 70°C (they appear to be served significantly cooler).',v:-3.54,c:{kind:'z',est:67.5,nul:70,sd:5,n:50,alpha:.05,tail:'two',estL:'Sample mean x̄ (°C)',nulL:'Claimed mean μ₀ (°C)',sdL:'Population σ (°C)',estN:'mean',er:[64,72,.1]}}];
+ $('#probs').innerHTML=P.map((p,i)=>`<div class="problem"><h3 style="margin-top:0">${p.t}</h3><p>${p.q}</p><div class="row"><button class="btn sm" data-h="${i}">Show hint</button><button class="btn sm" data-a="${i}">Show answer</button><span class="chk"><label class="cap" for="pa${i}">Your test statistic:</label><input type="number" step="any" id="pa${i}"><button class="btn sm" data-c="${i}">Check</button></span></div><div class="ui" id="pf${i}"></div>
+ <div class="reveal call warn" id="ph${i}"><b>Hint:</b> ${p.h}</div><div class="reveal call" id="pn${i}"><b>Answer:</b> ${p.a}</div>
+ <details class="mini"><summary>Open the calculator for this problem</summary><div id="pc${i}"></div></details></div>`).join('');
+ P.forEach((p,i)=>oneSample('pc'+i,p.c));
+ $('#probs').onclick=e=>{const d=e.target.dataset;if(d.h!==undefined)$('#ph'+d.h).classList.toggle('show');if(d.a!==undefined)$('#pn'+d.a).classList.toggle('show');if(d.c!==undefined){const i=+d.c,x=parseFloat($('#pa'+i).value),f=$('#pf'+i);f.textContent=isNaN(x)?'Type a number first.':Math.abs(x-P[i].v)<=.03?'✅ Matches — now compare it with the critical value.':'Not quite — check the standard error and the sign of (x̄ − μ₀).';}};})();
+
+/* ================= chi-square curve ================= */
+(function(){const ids=['#cDf','#cA','#cX'];function draw(){const k=+$('#cDf').value,a=+$('#cA').value,x=+$('#cX').value,cr=qchi(1-a,k),p=1-chiCdf(x,k),f=v=>chipdf(v,k);
+ plot($('#cPlot'),{xmin:0.001,xmax:25,fns:[{f}],ymax:k===1?.5:k===2?.55:undefined,shades:[{f,a:cr,b:99,cls:'sh-rej'}],lines:[{x:cr,label:'critical '+fmt(cr,3),cls:'ln-rej',row:1},{x,label:'χ² = '+fmt(x,2),cls:'ln-ink'}],step:5,label:'Chi-square distribution'});
+ $('#cCrit').textContent=fmt(cr,3);$('#cP').textContent=fp(p);const v=$('#cV');v.className='verdict '+(x>cr?'rej':'keep');v.textContent=x>cr?`χ² = ${fmt(x,2)} > ${fmt(cr,3)}: reject H₀ — the data disagrees with the claim.`:`χ² = ${fmt(x,2)} ≤ ${fmt(cr,3)}: fail to reject H₀ — the data is consistent with the claim.`;}
+ ids.forEach(i=>$(i).oninput=draw);draw();})();
+
+/* ================= Example 3 steps + GOF widget ================= */
+steps('ex3steps',[['State the Hypotheses','<p>H₀: The order distribution matches the marketing forecast (Margherita = 40%, Pepperoni = 35%, BBQ Chicken = 25%)</p><p>H₁: The order distribution does NOT match the marketing forecast (at least one category has shifted)</p>'],
+['Set the Significance Level','<p>α = 0.05</p>'],
+['Calculate the Test Statistic','<p>Calculate expected counts using E = n × p (n = 200): E(Margherita) = 200 × 0.40 = 80, E(Pepperoni) = 200 × 0.35 = 70, E(BBQ Chicken) = 200 × 0.25 = 50</p><div class="tbl"><table><tr><th>Pizza Type</th><th>Observed (O)</th><th>Expected (E)</th><th>(O−E)²/E</th></tr><tr><td>Margherita</td><td>70</td><td>80</td><td>(70−80)²/80 = 100/80 = 1.25</td></tr><tr><td>Pepperoni</td><td>80</td><td>70</td><td>(80−70)²/70 = 100/70 ≈ 1.43</td></tr><tr><td>BBQ Chicken</td><td>50</td><td>50</td><td>(50−50)²/50 = 0.00</td></tr></table></div><p>χ² = 1.25 + 1.43 + 0.00 = 2.68 &nbsp; df = 3 − 1 = 2</p><p>Critical value at α = 0.05, df = 2: χ²<sub>critical</sub> = 5.991</p>'],
+['Make the Decision','<p>χ² = 2.68 &lt; 5.991 = χ²<sub>critical</sub> → <b>Fail to reject H₀</b></p>'],
+['State the Conclusion','<p>There is not enough evidence to conclude that the order distribution has shifted from the marketing forecast. The observed sales pattern is consistent with the claimed proportions.</p>']]);
+(function(){const SC={pizza:{n:['Margherita','Pepperoni','BBQ Chicken'],p:[.4,.35,.25],o:[70,80,50],sh:[100,75,25]},snack:{n:['Chips','Cookies','Nuts','Candy'],p:[.25,.25,.25,.25],o:[30,22,28,20],sh:[45,15,25,15]}};let cur='pizza',obs=SC.pizza.o.slice();
+ function build(){const s=SC[cur];$('#gofSl').innerHTML=s.n.map((n,i)=>`<label>${n} (observed)<input type="range" min="0" max="150" value="${obs[i]}" data-i="${i}"><output></output></label>`).join('');$$('#gofSl input').forEach(syncOut);}
+ function draw(){const s=SC[cur],n=obs.reduce((a,b)=>a+b,0),E=s.p.map(p=>n*p),k=s.n.length,con=obs.map((o,i)=>E[i]>0?(o-E[i])**2/E[i]:0),chi=con.reduce((a,b)=>a+b,0),df=k-1,cr=qchi(.95,df),p=1-chiCdf(chi,df);
+ bars($('#gofBars'),{cats:s.n,series:[{vals:obs,cls:'b-blue'},{vals:E,cls:'b-amb'}],vlab:v=>Math.round(v*10)/10,legend:[['Observed','var(--blue)'],['Expected under the claim','var(--amb)']],h:230,label:'Observed versus expected counts'});
+ $('#gofTbl').innerHTML=`<tr><th>Category</th><th>Claimed share</th><th>Observed (O)</th><th>Expected (E = n × p)</th><th>(O−E)²/E</th></tr>`+s.n.map((nm,i)=>`<tr><td>${nm}</td><td>${(s.p[i]*100).toFixed(0)}%</td><td>${obs[i]}</td><td>${fmt(E[i],1)}</td><td>${fmt(con[i],2)}</td></tr>`).join('')+`<tr><td><b>Total</b></td><td>100%</td><td><b>${n}</b></td><td><b>${fmt(n,1)}</b></td><td><b>${fmt(chi,2)}</b></td></tr>`;
+ const f=x=>chipdf(x,df);plot($('#gofPlot'),{xmin:.001,xmax:Math.max(14,chi+2),fns:[{f}],ymax:df===1?.5:df===2?.55:undefined,shades:[{f,a:cr,b:999}],lines:[{x:cr,label:'critical '+fmt(cr,3),cls:'ln-rej',row:1},{x:chi,label:'χ² = '+fmt(chi,2),cls:'ln-ink'}],step:2,label:'Chi-square test'});
+ const v=$('#gofV'),rej=chi>cr,small=E.some(e=>e<5);v.className='verdict '+(rej?'rej':'keep');v.textContent=`χ² = ${fmt(chi,2)}, df = ${df}, critical value = ${fmt(cr,3)}, p = ${fp(p)}. `+(rej?'Reject H₀: the data does not match the claimed split.':'Fail to reject H₀: the data is consistent with the claimed split.')+(small?' ⚠️ Some expected counts are below 5 — the result may be unreliable.':'');}
+ $('#gofSl').oninput=e=>{obs[+e.target.dataset.i]=+e.target.value;draw();};
+ $$('[data-sc]').forEach(b=>b.onclick=()=>{cur=b.dataset.sc;obs=SC[cur].o.slice();$$('[data-sc]').forEach(x=>x.classList.toggle('on',x===b));build();draw();});
+ $('[data-reset]').onclick=()=>{obs=SC[cur].o.slice();build();draw();};$('[data-shift]').onclick=()=>{obs=SC[cur].sh.slice();build();draw();};build();draw();})();
+
+/* ================= Example 4 + independence widget ================= */
+steps('ex4steps',[['State the Hypotheses','<p>H₀: Gender and learning preference are independent (not related)</p><p>H₁: Gender and learning preference are NOT independent (they are related)</p>'],
+['Set the Significance Level','<p>α = 0.05</p>'],
+['Calculate the Test Statistic','<p>First, calculate expected values using E = (Row Total × Column Total) / Grand Total:</p><p>E(Male, Online) = (50 × 50) / 100 = 25<br>E(Male, In-Person) = (50 × 50) / 100 = 25<br>E(Female, Online) = (50 × 50) / 100 = 25<br>E(Female, In-Person) = (50 × 50) / 100 = 25</p><p>Now compute χ²:</p><p>χ² = (30 − 25)²/25 + (20 − 25)²/25 + (20 − 25)²/25 + (30 − 25)²/25<br>χ² = 1.00 + 1.00 + 1.00 + 1.00 = 4.00</p><p>df = (2−1) × (2−1) = 1. Critical value at α = 0.05, df = 1 is χ²<sub>critical</sub> = 3.841</p>'],
+['Make the Decision','<p>χ² = 4.00 &gt; 3.841 = χ²<sub>critical</sub> → <b>Reject H₀</b></p>'],
+['State the Conclusion','<p>There IS a statistically significant relationship between gender and learning preference at the 5% significance level. The data suggests that males tend to prefer online learning more than females.</p><p>Notice how close the result was to the critical value (4.00 vs 3.841). This is a good reminder that statistical significance doesn\'t always mean a huge practical difference — always think about the real-world context too.</p>']]);
+(function(){let d=[30,20,20,30];
+ function build(){$('#inTbl').innerHTML=`<tr><th></th><th>Online</th><th>In-Person</th><th>Row total</th></tr><tr><td>Male</td><td><input type="number" min="0" data-i="0"></td><td><input type="number" min="0" data-i="1"></td><td id="rt0"></td></tr><tr><td>Female</td><td><input type="number" min="0" data-i="2"></td><td><input type="number" min="0" data-i="3"></td><td id="rt1"></td></tr><tr><td>Column total</td><td id="ct0"></td><td id="ct1"></td><td id="gt"></td></tr>`;}
+ function draw(){const a=d[0]+d[1],b=d[2]+d[3],c=d[0]+d[2],e=d[1]+d[3],N=a+b;$$('#inTbl input').forEach(i=>i.value=d[i.dataset.i]);$('#rt0').textContent=a;$('#rt1').textContent=b;$('#ct0').textContent=c;$('#ct1').textContent=e;$('#gt').textContent=N;
+ const v=$('#inV');if(!a||!b||!c||!e){v.className='verdict keep';v.textContent='Every row and column needs at least one observation.';$('#inBars').innerHTML='';$('#inPlot').innerHTML='';return;}
+ const E=[a*c/N,a*e/N,b*c/N,b*e/N],con=d.map((o,i)=>(o-E[i])**2/E[i]),chi=con.reduce((x,y)=>x+y,0),cr=3.841,p=1-chiCdf(chi,1),rej=chi>cr;
+ const pc=(x,t)=>(100*x/t).toFixed(0),row=(l,x,t)=>`<div class="ui">${l}</div><div class="bar2"><div style="width:${pc(x,t)}%;background:var(--blue)">Online ${pc(x,t)}%</div><div style="width:${100-pc(x,t)}%;background:var(--amb)">In-person ${100-pc(x,t)}%</div></div>`;
+ $('#inBars').innerHTML='<p class="cap">If the variables were independent, both bars would look the same.</p>'+row('Male',d[0],a)+row('Female',d[2],b);
+ const f=x=>chipdf(x,1);plot($('#inPlot'),{xmin:.001,xmax:Math.max(10,chi+2),fns:[{f}],ymax:.5,shades:[{f,a:cr,b:999}],lines:[{x:cr,label:'critical 3.841',cls:'ln-rej',row:1},{x:chi,label:'χ² = '+fmt(chi,2),cls:'ln-ink'}],step:2,label:'Chi-square test of independence'});
+ v.className='verdict '+(rej?'rej':'keep');v.innerHTML=`Expected counts: ${E.map(x=>fmt(x,1)).join(', ')}. &nbsp;χ² = ${fmt(chi,2)}, df = 1, critical = 3.841, p = ${fp(p)}.<br>`+(rej?'Reject H₀: gender and learning preference appear to be related.':'Fail to reject H₀: not enough evidence of a relationship (this does not prove independence).')+(E.some(x=>x<5)?'<br>⚠️ An expected count is below 5 — the chi-square approximation may be unreliable (consider Fisher\'s Exact Test).':'');}
+ build();$('#inTbl').oninput=e=>{if(e.target.dataset.i!==undefined){d[+e.target.dataset.i]=Math.max(0,Math.round(+e.target.value||0));draw();}};
+ $$('[data-p]').forEach(b=>b.onclick=()=>{d=b.dataset.p.split(',').map(Number);draw();});draw();})();
+
+/* ================= Example 5 steps + ANOVA widget ================= */
+steps('ex5steps',[['State the Hypotheses','<p>H₀: All three layouts produce the same average daily sales (μA = μB = μC)</p><p>H₁: At least one layout produces a different average daily sales</p>'],
+['Set Significance Level','<p>α = 0.05. We will reject H₀ if our F statistic exceeds the critical value.</p>'],
+['Calculate the F Statistic','<p>We need two numbers: how much the groups differ from each other (between), and how much scores vary inside each group (within).</p><h4>Between-Group Variation</h4><p>How far are the group means from the grand mean?</p><p>SS<sub>between</sub> = 5 × (14 − 15)² + 5 × (19 − 15)² + 5 × (12 − 15)² = 5 × 1 + 5 × 16 + 5 × 9 = 5 + 80 + 45 = 130<br>df<sub>between</sub> = 3 − 1 = 2<br>MS<sub>between</sub> = 130 ÷ 2 = 65</p><h4>Within-Group Variation</h4><p>How spread out are scores inside each group?</p><p>Layout A: (12 − 14)² + (15 − 14)² + (14 − 14)² + (13 − 14)² + (16 − 14)² = 4 + 1 + 0 + 1 + 4 = 10<br>Layout B: (18 − 19)² + (20 − 19)² + (19 − 19)² + (21 − 19)² + (17 − 19)² = 1 + 1 + 0 + 4 + 4 = 10<br>Layout C: (10 − 12)² + (11 − 12)² + (13 − 12)² + (12 − 12)² + (14 − 12)² = 4 + 1 + 1 + 0 + 4 = 10</p><p>SS<sub>within</sub> = 10 + 10 + 10 = 30<br>df<sub>within</sub> = 15 − 3 = 12<br>MS<sub>within</sub> = 30 ÷ 12 = 2.5</p><p><b>F = MS<sub>between</sub> ÷ MS<sub>within</sub> = 65 ÷ 2.5 = 26.0</b></p><div class="tbl"><table><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr><tr><td>Between Groups</td><td>130</td><td>2</td><td>65</td><td>26.0</td></tr><tr><td>Within Groups</td><td>30</td><td>12</td><td>2.5</td><td>—</td></tr><tr><td>Total</td><td>160</td><td>14</td><td>—</td><td>—</td></tr></table></div><p>Critical value at α = 0.05, df₁ = 2, df₂ = 12: F<sub>critical</sub> = 3.885</p>'],
+['Make the Decision','<p>F = 26.0 &gt; 3.885 = F<sub>critical</sub> → <b>Reject H₀</b></p>'],
+['Conclusion','<p>There IS a statistically significant difference in average daily sales across the three layouts.</p><p>Layout B clearly leads with $19,000/day vs $14,000 (A) and $12,000 (C). The company should investigate what makes Layout B work — product placement, traffic flow, signage — before rolling it out chain-wide.</p>']]);
+(function(){const D0=[[12,15,14,13,16],[18,20,19,21,17],[10,11,13,12,14]];let D=D0.map(r=>r.slice());const nm=['A','B','C'];
+ $('#anTbl').innerHTML='<tr><th>Store</th>'+nm.map(x=>`<th>Layout ${x}</th>`).join('')+'</tr>'+[0,1,2,3,4].map(i=>`<tr><td>Store ${i+1}</td>`+[0,1,2].map(g=>`<td><input type="number" step="any" data-g="${g}" data-i="${i}"></td>`).join('')+'</tr>').join('');
+ function draw(){$$('#anTbl input').forEach(x=>x.value=D[x.dataset.g][x.dataset.i]);const sh=+$('#anSh').value,k=+$('#anK').value,mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
+ const V=D.map((r,g)=>{const m=mean(r),m2=m+(g===1?sh:0);return r.map(x=>m2+(x-m)*k);}),all=V.flat(),gm=mean(all),mu=V.map(mean),ni=V.map(r=>r.length),N=all.length,K=3;
+ const ssb=V.reduce((s,r,g)=>s+ni[g]*(mu[g]-gm)**2,0),ssw=V.reduce((s,r,g)=>s+r.reduce((t,x)=>t+(x-mu[g])**2,0),0),dfb=K-1,dfw=N-K,msb=ssb/dfb,msw=ssw/dfw,F=msb/msw,cr=qf(.95,dfb,dfw),p=1-fCdf(F,dfb,dfw);
+ const W=640,H=240,L=40,R=16,T=16,B=34,mn=Math.min(...all)-2,mx=Math.max(...all)+2,sy=v=>H-B-(v-mn)/(mx-mn)*(H-B-T),gx=g=>L+(g+.5)*(W-L-R)/3;
+ let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dot plot of the three groups"><line class="ax" x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}"/><line class="ax" x1="${L}" x2="${L}" y1="${T}" y2="${H-B}"/>`;
+ const st=niceStep(mx-mn);for(let t=Math.ceil(mn/st)*st;t<=mx;t+=st)s+=`<text x="${L-6}" y="${sy(t)+4}" text-anchor="end">${+t.toFixed(1)}</text>`;
+ s+=`<line class="ln ln-ink" x1="${L}" x2="${W-R}" y1="${sy(gm)}" y2="${sy(gm)}"/><text x="${W-R}" y="${sy(gm)-5}" text-anchor="end" style="fill:var(--ink);font-weight:700">grand mean ${fmt(gm,1)}</text>`;
+ V.forEach((r,g)=>{const col=['var(--blue)','var(--amb)','var(--teal)'][g];r.forEach((x,i)=>s+=`<circle cx="${gx(g)+(i-2)*14}" cy="${sy(x)}" r="5" style="fill:${col};opacity:.85"/>`);s+=`<line x1="${gx(g)-48}" x2="${gx(g)+48}" y1="${sy(mu[g])}" y2="${sy(mu[g])}" style="stroke:${col};stroke-width:3"/><text x="${gx(g)}" y="${H-12}" text-anchor="middle" style="fill:var(--ink);font-weight:700">Layout ${nm[g]} (mean ${fmt(mu[g],1)})</text>`;});
+ $('#anDots').innerHTML=s+'</svg>';
+ const f=x=>fpdf(x,dfb,dfw);plot($('#anPlot'),{xmin:.01,xmax:Math.max(8,F*1.15),fns:[{f}],ymax:1.05,shades:[{f,a:cr,b:999}],lines:[{x:cr,label:'critical '+fmt(cr,3),cls:'ln-rej',row:1},{x:F,label:'F = '+fmt(F,2),cls:'ln-ink'}],label:'F distribution'});
+ $('#anSum').innerHTML=`<tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr><tr><td>Between Groups</td><td>${fmt(ssb,1)}</td><td>${dfb}</td><td>${fmt(msb,2)}</td><td>${fmt(F,2)}</td></tr><tr><td>Within Groups</td><td>${fmt(ssw,1)}</td><td>${dfw}</td><td>${fmt(msw,2)}</td><td>—</td></tr><tr><td>Total</td><td>${fmt(ssb+ssw,1)}</td><td>${N-1}</td><td>—</td><td>—</td></tr>`;
+ const v=$('#anV'),rej=F>cr;v.className='verdict '+(rej?'rej':'keep');v.textContent=`F = ${fmt(F,2)} ${rej?'>':'≤'} F critical = ${fmt(cr,3)} (p = ${fp(p)}). `+(rej?'Reject H₀: at least one layout has a different average. A post-hoc test would tell you which.':'Fail to reject H₀: the differences between the layouts are small compared with the scatter inside each layout.');}
+ $('#anTbl').oninput=e=>{if(e.target.dataset.g!==undefined){D[+e.target.dataset.g][+e.target.dataset.i]=+e.target.value||0;draw();}};$('#anSh').oninput=draw;$('#anK').oninput=draw;
+ $('#anReset').onclick=()=>{D=D0.map(r=>r.slice());$('#anSh').value=0;$('#anK').value=1;$$('#anSh,#anK').forEach(syncOut);draw();};draw();})();
+
+/* ================= two-sample calculator ================= */
+function twoSample(id,c){const root=$('#'+id);
+ root.innerHTML=`<div class="ctl"><label>${c.nA}: mean x̄<input type="number" step="any" data-k="ma" value="${c.ma}"></label><label>${c.nA}: std dev s<input type="number" step="any" data-k="sa" value="${c.sa}"></label><label>${c.nA}: n<input type="number" min="2" data-k="na" value="${c.na}"></label>
+ <label>${c.nB}: mean x̄<input type="number" step="any" data-k="mb" value="${c.mb}"></label><label>${c.nB}: std dev s<input type="number" step="any" data-k="sb" value="${c.sb}"></label><label>${c.nB}: n<input type="number" min="2" data-k="nb" value="${c.nb}"></label>
+ <label>α<select data-k="a"><option value="0.1">0.10</option><option value="0.05">0.05</option><option value="0.01">0.01</option></select></label><label>H₁<select data-k="t"><option value="two">μA ≠ μB (two-tailed)</option><option value="right">μB &gt; μA (right-tailed)</option><option value="left">μB &lt; μA (left-tailed)</option></select></label></div>
+ <div class="ctl"><label>Slide ${c.nB}'s average<input type="range" data-k="mr" min="${c.mr[0]}" max="${c.mr[1]}" step="${c.mr[2]}" value="${c.mb}"><output></output></label><label>Slide n (both groups)<input type="range" data-k="nr" min="2" max="300" value="${c.na}"><output></output></label></div>
+ <div class="hyp" data-o="hyp"></div><h4>Distribution of the test statistic</h4><div data-o="plot"></div><h4>Where each group's average could plausibly sit</h4><div data-o="plot2"></div><div class="stats" data-o="res"></div><div class="verdict" data-o="v"></div>`;
+ const g=k=>root.querySelector(`[data-k=${k}]`),o=k=>root.querySelector(`[data-o=${k}]`);g('a').value=c.alpha;g('t').value=c.tail;
+ function rd(){const ma=+g('ma').value,sa=+g('sa').value,na=Math.max(2,Math.round(+g('na').value)),mb=+g('mb').value,sb=+g('sb').value,nb=Math.max(2,Math.round(+g('nb').value)),a=+g('a').value,tl=g('t').value,
+  sea=sa/Math.sqrt(na),seb=sb/Math.sqrt(nb),se=Math.sqrt(sa*sa/na+sb*sb/nb),t=(mb-ma)/se,df=Math.min(na,nb)-1,pdf=x=>tpdf(x,df),cdf=x=>tCdf(x,df),p=tl==='two'?2*(1-cdf(Math.abs(t))):tl==='right'?1-cdf(t):cdf(t),cr=qt(tl==='two'?1-a/2:1-a,df),rej=p<=a,xr=Math.max(4,Math.abs(t)+.8);
+  const h={two:['μA = μB','μA ≠ μB'],right:['μB ≤ μA','μB > μA'],left:['μB ≥ μA','μB < μA']}[tl];o('hyp').innerHTML=`<span><b>H₀:</b> ${h[0]}</span><span><b>H₁:</b> ${h[1]}</span>`;
+  plot(o('plot'),{xmin:-xr,xmax:xr,fns:[{f:pdf}],shades:tailShade(tl,cr,pdf),lines:[{x:t,label:'t = '+fmt(t,2),cls:'ln-ink'},...critLines(tl,cr,1)],label:'Two-sample t test'});
+  const lo=Math.min(ma-4*sea,mb-4*seb),hi=Math.max(ma+4*sea,mb+4*seb);
+  plot(o('plot2'),{xmin:lo,xmax:hi,h:200,fns:[{f:x=>phi((x-ma)/sea)/sea,cls:'cv-blue'},{f:x=>phi((x-mb)/seb)/seb,cls:'cv-amb'}],shades:[{f:x=>phi((x-ma)/sea)/sea,a:-1e9,b:1e9,cls:'sh-blue'},{f:x=>phi((x-mb)/seb)/seb,a:-1e9,b:1e9,cls:'sh-amb'}],legend:[[c.nA,'var(--blue)'],[c.nB,'var(--amb)']],label:'Sampling distributions of the two means'});
+  o('res').innerHTML=`<div class="stat"><span>Difference in means (B − A)</span><b>${fmt(mb-ma,2)}</b></div><div class="stat"><span>Standard error of the difference</span><b>${fmt(se,3)}</b></div><div class="stat"><span>t</span><b>${fmt(t,3)}</b></div><div class="stat"><span>df ≈ min(nA−1, nB−1)</span><b>${df}</b></div><div class="stat"><span>Critical value</span><b>${tl==='two'?'±':tl==='left'?'−':''}${fmt(cr,3)}</b></div><div class="stat"><span>p-value</span><b>${fp(p)}</b></div>`;
+  const v=o('v');v.className='verdict '+(rej?'rej':'keep');v.textContent=rej?`Reject H₀ (p = ${fp(p)} ≤ α = ${a}). The two groups are significantly different.`:`Fail to reject H₀ (p = ${fp(p)} > α = ${a}). The difference could easily be due to chance.`;
+  if(c.cb)c.cb({diff:mb-ma,rej});}
+ root.addEventListener('input',e=>{const k=e.target.dataset.k;if(k==='mr')g('mb').value=e.target.value;if(k==='mb'){g('mr').value=e.target.value;syncOut(g('mr'));}if(k==='nr'){g('na').value=g('nb').value=e.target.value;}if(k==='na'||k==='nb'){g('nr').value=e.target.value;syncOut(g('nr'));}rd();});rd();}
+twoSample('tsCalc',{nA:'Group A',nB:'Group B',ma:50,sa:10,na:30,mb:55,sb:12,nb:30,alpha:.05,tail:'two',mr:[30,75,.5]});
+
+/* ================= Example 6 ================= */
+steps('ex6steps',[['State the Hypotheses','<p>H₀: No difference in average order value between the two pages (μA = μB)</p><p>H₁: There IS a difference (μA ≠ μB)</p>'],
+['Set Significance Level','<p>α = 0.05, two-tailed test. α/2 = 0.025 on each side. We reject H₀ if |t| exceeds the critical value.</p>'],
+['Calculate the t Statistic','<p>We plug the numbers into the two-sample t formula: t = (x̄B − x̄A) / √(sA²/nA + sB²/nB)</p><p><b>How different are the two means?</b> x̄B − x̄A = 94 − 85 = 9</p><p><b>How much could this difference vary by chance? (Standard Error)</b><br>sA²/nA = 18²/40 = 324/40 = 8.10<br>sB²/nB = 20²/40 = 400/40 = 10.00<br>SE = √(8.10 + 10.00) = √18.10 ≈ 4.25</p><p>t = 9 / 4.25 ≈ 2.12</p><p>df ≈ min(40−1, 40−1) = 39<br>t_critical (α = 0.05, two-tailed, df = 39) = ±2.023</p>'],
+['Make the Decision','<p>|t| = 2.12 &gt; 2.023 = t_critical → <b>Reject H₀</b></p>'],
+['Conclusion','<p>There IS a statistically significant difference in average order value. Version B performs better than Version A.</p><p>Version B earned $9 more per order on average. At 10,000 orders/month, that is an extra $90,000 in monthly revenue. Roll out Version B.</p>']]);
+(function(){let last={diff:9,rej:true};const sl=$('#abOrd');function rev(){const v=$('#abRev'),n=+sl.value;v.textContent=last.rej?`A statistically significant lift of $${fmt(last.diff,2)} per order. At ${n.toLocaleString()} orders/month, that is about $${Math.round(last.diff*n).toLocaleString()} in extra monthly revenue.`:`The $${fmt(last.diff,2)} difference per order is not statistically significant, so the projected $${Math.round(last.diff*n).toLocaleString()} per month could simply be chance. Collect more data before rolling out.`;}
+ twoSample('abCalc',{nA:'Version A (Current)',nB:'Version B (New)',ma:85,sa:18,na:40,mb:94,sb:20,nb:40,alpha:.05,tail:'two',mr:[70,110,.5],cb:r=>{last=r;rev();}});sl.oninput=rev;rev();})();
+
+$$('input[type=range]').forEach(syncOut);
+</script>
+</body>
+</html>
